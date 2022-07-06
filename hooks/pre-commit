@@ -31,8 +31,7 @@ dockerfile_update_version() {
   echo "${new_version}" > "${1}"
 
   git add "${1}"
-  git commit -m "${git_msg}"
-  git push
+#  git commit --no-verify -m "${git_msg}"
 }
 
 for file in "${mod_files[@]}"; do
