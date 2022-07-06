@@ -1,6 +1,8 @@
 #!/bin/bash
+
 cur_branch=$(git branch --show-current)
 mod_files=$(git diff --cached --name-only --diff-filter=M)
+git_root=$(git rev-parse --show-toplevel)
 
 dockerfile_update_version() {
   # $1 = version file
@@ -31,11 +33,17 @@ dockerfile_update_version() {
   echo "${new_version}" > "${1}"
 
   git add "${1}"
-#  git commit --no-verify -m "${git_msg}"
 }
 
+# Find modified dockerfiles and increment versions accordingly
 for file in "${mod_files[@]}"; do
-  if [[ "${file}" =~ "Dockerfile.ansible" ]]; then
-    dockerfile_update_version "${PWD}/build/Dockerfile.ansible.version"
+  if [[ "${file}" =~ "Dockerfile." ]]; then
+    version_file="${file}.version"
+    if [ ! -f "${version_file}" ]; then
+      # Ensure version file exista for this Dockerfile
+      echo "0.0.0" > "${version_file}"
+    fi
+
+    dockerfile_update_version "${file}.version"
   fi
 done
