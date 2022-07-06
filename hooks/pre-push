@@ -23,9 +23,16 @@ dockerfile_update_version() {
     # New patch if in any other branch
     patch=$((patch+1))
   fi
+
   new_version="${major}.${minor}.${patch}"
-  echo "$(basename ${1})(${cur_version}): Changing version to ${new_version}"
+  git_msg="$(basename ${1})(${cur_version}): Changing version to ${new_version}"
+
+  echo "${git_msg}"
   echo "${new_version}" > "${1}"
+
+  git add "${1}"
+  git commit -m "${git_msg}"
+  git push
 }
 
 for file in "${mod_files[@]}"; do
