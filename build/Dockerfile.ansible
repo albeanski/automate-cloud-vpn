@@ -1,41 +1,27 @@
-FROM ubuntu:20.04
+FROM alpine:latest
 
-# install chromium dependencies
-RUN apt update -y && \
-  apt install -yq python3 \
-  python3-pip
+# Install ansible and dependencies
+RUN apk update && \
+  apk add \
+    python3 \
+    py3-pip \
+  && python3 -m pip install ansible
 
-RUN apt-get -y install locales && \
-  sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-  dpkg-reconfigure --frontend=noninteractive locales && \
-  update-locale LANG=en_US.UTF-8
-
-ENV LANG en_US.utf8
-ENV LC_ALL en_US.utf8
-
-RUN python3 -m pip install ansible
-
-# setup the app
 RUN mkdir -p /project
-#  touch /project/requirements.yml
 WORKDIR /project
 
-RUN groupadd -r dev && \
-  useradd -r -g dev dev && \
-  mkdir /home/dev && \
-  chown -R dev:dev /home/dev && \
+# Create a group/user and project directory
+RUN addgroup -S dev && \
+  adduser -S dev -G dev && \
   chown -R dev:dev /project
 
-# ansible-galaxy collextions
-RUN ansible-galaxy collection install \
-  kubernetes.core
+
+COPY ./bootstrap.sh /
+RUN chmod +x /bootstrap.sh && \
+  chown dev:dev /bootstrap.sh
 
 USER dev
-  
-ENTRYPOINT if [ -f "/project/requirements.yml" ]; then \
-    ansible-galaxy install -r "/project/requirements.yml" >&2; \
-  fi; \
-  if [ -f "/project/pip-requirements.txt" ]; then \
-    pip3 install -r "/project/pip-requirements.txt" >&2; \
-  fi; \
-  tail -f /dev/null;
+
+# Install ansible-galaxy requirements
+# and python pip modules
+ENTRYPOINT ["/bootstrap.sh"]

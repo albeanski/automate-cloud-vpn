@@ -1,0 +1,35 @@
+#!/bin/bash
+cur_branch=$(git branch --show-current)
+mod_files=$(git diff --cached --name-only --diff-filter=M)
+
+dockerfile_update_version() {
+  # $1 = version file
+  cur_version=$(cat $1)
+  parsed_version=(${cur_version//./ })
+  major="${parsed_version[0]}"
+  minor="${parsed_version[1]}"
+  patch="${parsed_version[2]}"
+
+  if [ "${cur_branch}" == "main" ]; then
+    # New major version if in main branch
+    major=$((major+1))
+    minor=0
+    patch=0
+  elif [ "${cur_branch}" == "dev" ]; then
+    # New minor version if in dev branch
+    minor=$((minor+1))
+    patch=0
+  else
+    # New patch if in any other branch
+    patch=$((patch+1))
+  fi
+  new_version="${major}.${minor}.${patch}"
+  echo "$(basename ${1})(${cur_version}): Changing version to ${new_version}"
+  echo "${new_version}" > "${1}"
+}
+
+for file in "${mod_files[@]}"; do
+  if [[ "${file}" =~ "Dockerfile.ansible" ]]; then
+    dockerfile_update_version "${PWD}/build/Dockerfile.ansible.version"
+  fi
+done
