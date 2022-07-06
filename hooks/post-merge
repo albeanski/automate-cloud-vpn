@@ -37,6 +37,8 @@ dockerfile_update_version() {
   git commit -m "${git_msg}"
 }
 
+update_flag=0
+
 # Find modified dockerfiles and increment versions accordingly
 for file in "${mod_files[@]}"; do
   if [[ "${file}" =~ "Dockerfile." ]]; then
@@ -52,5 +54,10 @@ for file in "${mod_files[@]}"; do
     fi
 
     dockerfile_update_version "${file}.version"
+    update_flag=1
   fi
 done
+
+if [ "${update_flag}" -ne 0 ]: then
+  git push
+fi
