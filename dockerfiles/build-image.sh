@@ -1,4 +1,12 @@
 #!/bin/sh
+if [ ! -z "${1}" ]; then
+  if [ ! -d "${1}" ]; then
+    echo "Invalid directory: ${1}"
+    exit 1
+  fi
+  cd "${1}"
+fi
+
 name=$(echo "${PWD}" | grep -oe "[^/]*$")
 version="$(cat ${PWD}/version)"
 if [ ! -f "${PWD}/version" ]; then
@@ -6,7 +14,7 @@ if [ ! -f "${PWD}/version" ]; then
 fi
 
 echo "docker build -t ${name}:${version} -t ${name}:latest ."
-if ! docker build -t "${name}:${version}" -t "${name}:latest" "$@" . ; then
+if ! docker build -t "${name}:${version}" -t "${name}:latest" . ; then
   exit 1
 fi
 

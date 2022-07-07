@@ -1,0 +1,7 @@
+version: "3.3"  # optional since v1.27.0
+services:
+  ansible:
+    container_name: automate-cloud-vpn
+    volumes:
+      - ./project:/project
+    image: albeanski/ansible-terraform:latest
