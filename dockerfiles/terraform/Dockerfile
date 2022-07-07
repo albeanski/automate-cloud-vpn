@@ -26,8 +26,10 @@ RUN addgroup -S dev && \
 
 RUN terraform --version
 
+COPY ./entrypoint.sh .
+RUN chmod +x /entrypoint.sh && \
+  chown dev:dev /entrypoint.sh
+
 USER dev
 
-# Install ansible-galaxy requirements
-# and python pip modules
-ENTRYPOINT ["tail", "-f", "/dev/null"]
+ENTRYPOINT ["./entrypoint.sh"]

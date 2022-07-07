@@ -6,7 +6,9 @@ if [ ! -f "${PWD}/version" ]; then
 fi
 
 echo "docker build -t ${name}:${version} -t ${name}:latest ."
-docker build -t "${name}:${version}" -t "${name}:latest" "$@" .
+if ! docker build -t "${name}:${version}" -t "${name}:latest" "$@" . ; then
+  exit 1
+fi
 
 read -p "Push to remote? [Y/n] " push
 
@@ -29,5 +31,6 @@ if [ -z "${push}" ] || [ "${push}" = "y" ] || [ "${push}" = "Y" ]; then
   docker tag "${name}:${version}" "${user}/${name}:latest"
 
   docker push "${user}/${name}:${version}"
+  docker push "${user}/${name}:latest"
 
 fi
