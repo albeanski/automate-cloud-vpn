@@ -10,16 +10,21 @@ RUN apk update && \
   git clone https://github.com/hashicorp/terraform.git
 
 WORKDIR terraform
-RUN go install
+RUN go install && \
+  mkdir "/terraform-binary" && \
+  mv "$(go env GOPATH)/bin/terraform" /terraform-binary/terraform
 
 FROM alpine:latest
 
-COPY --from=0 /terraform/terraform /bin/
+COPY --from=0 /terraform-binary/terraform /bin/terraform
 
 # Create a group/user and project directory
 RUN addgroup -S dev && \
   adduser -S dev -G dev && \
+  mkdir /project && \
   chown -R dev:dev /project
+
+RUN terraform --version
 
 USER dev
 
