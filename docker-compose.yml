@@ -4,4 +4,4 @@ services:
     container_name: automate-cloud-vpn
     volumes:
       - ./project:/project
-    image: albeanski/ansible-terraform:latest
+    image: albeanski/ansible-terraform-aws:latest
