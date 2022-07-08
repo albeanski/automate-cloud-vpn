@@ -1,7 +1,7 @@
 #!/bin/bash
 
-name="${1}-test"
-image="${1}:${2}"
+name="${1}"
+image="${2}"
 
 echo "Creating container '${name}' to test image '${image}'..."
 
