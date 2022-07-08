@@ -18,7 +18,7 @@ if ! docker build -t "${name}:${version}" -t "${name}:latest" $@ ; then
 fi
 
 if [ -f "${path}/test-image.sh" ]; then
-  if ! "${path}/test-image.sh" "${name}" "${version}"; then
+  if ! "${path}/test-image.sh" "${name}-test" "${name}:{version}"; then
     read -p "Image test failed... quit? [Y/n]" quit
     if [ -z "${quit}" ] || [ "${quit}" = "Y" ] || [ "${quit}" = "y" ]; then
       exit 1
