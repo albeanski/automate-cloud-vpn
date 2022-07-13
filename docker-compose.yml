@@ -2,6 +2,9 @@ version: "3.3"
 services:
   ansible:
     container_name: automate-cloud-vpn
+    env_file: 
+      - "env_vars"
     volumes:
       - ./project:/project
+      - ./runtime:/runtime
     image: albeanski/ansible-terraform-aws:latest

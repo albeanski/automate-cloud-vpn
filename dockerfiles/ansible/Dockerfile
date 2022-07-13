@@ -11,8 +11,8 @@ RUN mkdir -p /project
 WORKDIR /project
 
 # Create a group/user and project directory
-RUN addgroup -S dev && \
-  adduser -S dev -G dev && \
+RUN addgroup -S -g 1000 dev && \
+  adduser -S -u 1000 -G dev dev && \
   chown -R dev:dev /project
 
 

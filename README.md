@@ -13,3 +13,7 @@ examples:
 ./dockerfiles/build-image.sh ./dockerfiles/ansbile-terraform/
 
 ```
+
+## Testing images
+To test an image after a build, create a `test-image.sh` file inside the directory containing the Dockerfile and it will be ran after an image build.
+The build-image.sh script is run as follows: `test-image`

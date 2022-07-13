@@ -1,0 +1,28 @@
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    terraform_main_tf_path: "files/terraform/main.tf"
+    terraform_variables_tf_path: "files/terraform/variables.tf"
+    runtime_path: "/runtime"
+
+  tasks:
+    - name: Ensure main.tf runtime path exists
+      ansible.builtin.file:
+        path: "{{ runtime_path }}/{{ terraform_main_tf_path | dirname }}"
+        state: directory
+      
+    - name: Create Terraform main.tf from template to runtime dir
+      ansible.builtin.template:
+        src: "{{ terraform_main_tf_path }}"
+        dest: "{{ runtime_path }}/{{ terraform_main_tf_path }}"
+
+    - name: Ensure variables.tf runtime path exists
+      ansible.builtin.file:
+        path: "{{ runtime_path }}/{{ terraform_variables_tf_path | dirname }}"
+        state: directory
+
+    - name: Create variables.tf from template to runtime dir
+      ansible.builtin.template:
+        src: "{{ terraform_variables_tf_path }}"
+        dest: "{{ runtime_path }}/{{ terraform_variables_tf_path }}"

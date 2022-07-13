@@ -4,8 +4,13 @@ name="${1}"
 image="${2}"
 
 echo "Creating container '${name}' to test image '${image}'..."
-
-docker run --rm -itd --name "${name}" "${image}" >/dev/null
+echo "docker run -itd --name \"${name}\" \"${image}\""
+if ! docker run -itd --name "${name}" "${image}"; then
+  echo "Something went wrong... printing logs"
+  docker logs "${name}"
+  docker rm -f "${name}" >/dev/null
+  exit 1
+fi
 
 fail=0
 echo -n "ansible... "

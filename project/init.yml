@@ -1,0 +1,8 @@
+# init script runs first
+---
+hosts: all
+tasks:
+  - name: Place temporary file im /tmp 
+    ansible.builtin.copy:
+      dest: /tmp/placeholder.txt
+      content: "THIS FILE EXISTING IS PROOF THAT TERRAFOM WAS SUCCESSFUL."
