@@ -5,6 +5,7 @@ RUN apk update && \
   apk add \
     python3 \
     py3-pip \
+    openssh \
   && python3 -m pip install ansible
 
 RUN mkdir -p /project

@@ -1,28 +1,35 @@
 - hosts: localhost
   connection: local
   gather_facts: no
-  vars:
-    terraform_main_tf_path: "files/terraform/main.tf"
-    terraform_variables_tf_path: "files/terraform/variables.tf"
-    runtime_path: "/runtime"
-
   tasks:
-    - name: Ensure main.tf runtime path exists
+    - name: Ensure config paths exist
       ansible.builtin.file:
-        path: "{{ runtime_path }}/{{ terraform_main_tf_path | dirname }}"
+        path: "{{ item }}"
         state: directory
+      loop:
+        - "{{ tf_config_dir }}"
+        - "{{ ansible_config_dir }}"
+
+    - name: Create Terraform tf files from template to config dir
+      ansible.builtin.template:
+        src: "{{ tf_template_dir }}/{{ item }}"
+        dest: "{{ tf_config_dir }}/{{ item }}"
+      loop: "{{ tf_template_files }}"
+
+    - name: Create Ansible files from template to config dir
+      ansible.builtin.template:
+        src: "{{ ansible_template_dir }}/{{ item }}"
+        dest: "{{ ansible_config_dir }}/{{ item }}"
+      loop: "{{ ansible_template_files }}"
+
+    - name: Create Ansible playbook files from template to playbook dir
+      ansible.builtin.template:
+        src: "{{ ansible_template_dir }}/{{ item }}"
+        dest: "{{ ansible_config_dir }}/{{ item }}"
+      loop: "{{ ansible_playbook_files }}"
       
-    - name: Create Terraform main.tf from template to runtime dir
-      ansible.builtin.template:
-        src: "{{ terraform_main_tf_path }}"
-        dest: "{{ runtime_path }}/{{ terraform_main_tf_path }}"
-
-    - name: Ensure variables.tf runtime path exists
+    - name: Create a .entrypoint_complete file to ensure proceeding scripts are run at the right time
       ansible.builtin.file:
-        path: "{{ runtime_path }}/{{ terraform_variables_tf_path | dirname }}"
-        state: directory
+        state: touch
+        dest: ".entrypoint_complete"
 
-    - name: Create variables.tf from template to runtime dir
-      ansible.builtin.template:
-        src: "{{ terraform_variables_tf_path }}"
-        dest: "{{ runtime_path }}/{{ terraform_variables_tf_path }}"

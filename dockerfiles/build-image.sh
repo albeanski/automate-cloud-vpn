@@ -26,7 +26,17 @@ if [ -f "${path}/test-image.sh" ]; then
   fi
 fi
 
-read -p "Push to remote? [Y/n] " push
+if [ "${BUILD_IMAGE_PUSH}" = "true" ] || [ "${BUILD_IMAGE_PUSH}" = "True" ] ||
+   [ "${BUILD_IMAGE_PUSH}" = "TRUE" ] || [ "${BUILD_IMAGE_PUSH}" = "yes" ] ||
+   [ "${BUILD_IMAGE_PUSH}" = "Yes" ] || [ "${BUILD_IMAGE_PUSH}" = "YES" ] ||
+   [ "${BUILD_IMAGE_PUSH}" -eq 1 ]; then
+
+  push=y
+
+else
+  read -p "Push to remote? [Y/n] " push
+
+fi
 
 if [ -z "${push}" ] || [ "${push}" = "y" ] || [ "${push}" = "Y" ]; then
   if [ -z "${DOCKER_REMOTE_USER}" ]; then

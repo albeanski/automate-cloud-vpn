@@ -51,6 +51,9 @@ resource "aws_instance" "{{ instance_id | default('instance') }}" {
   instance_type          = "${var.instance_type}"             #Instance type defined in variables.tf file
   key_name               = "${aws_key_pair.deployer.key_name}"              #KeyPair name to be attached to the instance. Forgot to add in variables :D
   vpc_security_group_ids = [{% for sg in aws_security_groups %}"${aws_security_group.{{ sg.id }}.id}"{{ ',' if loop.index < loop.length else '' }}{% endfor %}]    #Security group id which we already created
+  tags = { 
+    Name = "${var.instance_name}"
+  }
 
   #Because AWS instance needs some time to be ready for usage we will use below trick with remote-exec. 
   #As per documentation remote-exec waits for successful connection and only after this runs command. 
@@ -67,6 +70,6 @@ resource "aws_instance" "{{ instance_id | default('instance') }}" {
   
   #local-exec runs our app server related playbook
   provisioner "local-exec" {
-    command ="cd {{ ansible_project_path | default('/project') }} && ansible-playbook {{ ansible_playbook_init | default('init.yml') }} --private-key=${var.ssh_private_key} --user ${var.instance_username}"
+    command ="cd /project && ansible-playbook {{ ansible_playbook_init | default('init.yml') }} -i {{ ansible_config_dir }}/aws_ec2.yml --private-key=${var.ssh_private_key} --user ${var.instance_username}"
   }
 }

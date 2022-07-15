@@ -8,6 +8,10 @@ variable "ssh_private_key" {
   description = "Private key for ssh"
 }
 
+variable "instance_name" {
+  default     = "{{ aws_instance_name | mandatory }}"
+  description     = "Adds a tag of name=instance_name"
+}
 
 variable "instance_type" {
   default     = "{{ aws_instance_type | default('t2.micro') }}"

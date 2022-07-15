@@ -1,13 +1,31 @@
 ---
+ansible_template_files:
+  - "aws_ec2.yml"
+ansible_playbook_files:
+  - "setup.yml"
+
+tf_template_files:
+    - "main.tf"
+    - "variables.tf"
+
+tf_template_dir: "files/terraform"
+tf_config_dir: "/runtime/terraform"
+
+ansible_template_dir: "files/ansible"
+ansible_config_dir: "/runtime/ansible"
+ansible_playbook_dir: "."
+
 ssh_public_key:    "{{ lookup('ansible.builtin.env', 'SSH_PUBLIC_KEY',    default='/project/files/ssh_key.pub') }}"
 ssh_private_key:   "{{ lookup('ansible.builtin.env', 'SSH_PRIVATE_KEY',   default='/project/files/ssh_key') }}"
 
-aws_instance_type: "{{ lookup('ansible.builtin.env', 'AWX_INSTANCE_TYPE', default='t2.micro') }}"
+aws_instance_name: "{{ lookup('ansible.builtin.env', 'AWS_INSTANCE_NAME') | mandatory }}"
+aws_instance_type: "{{ lookup('ansible.builtin.env', 'AWS_INSTANCE_TYPE', default='t2.micro') }}"
 aws_access_key:    "{{ lookup('ansible.builtin.env', 'AWS_ACCESS_KEY')    | mandatory }}"
 aws_secret_key:    "{{ lookup('ansible.builtin.env', 'AWS_SECRET_KEY')    | mandatory }}"
 aws_instance_ami:  "{{ lookup('ansible.builtin.env', 'AWS_INSTANCE_AMI')  | mandatory }}"
 aws_region:        "{{ lookup('ansible.builtin.env', 'AWS_REGION')        | mandatory }}"
-aws_user:          "{{ lookup('ansible.builtin.env', 'AWS_USER)           | mandatory }}"
+aws_user:          "{{ lookup('ansible.builtin.env', 'AWS_USER')          | mandatory }}"
+ansible_user: "{{ aws_user }}"
 
 aws_security_groups:
   - name: ssh

@@ -19,4 +19,6 @@ ENV PATH="/home/dev/.local/bin:${PATH}"
 
 RUN pip3 install awscli
 
+WORKDIR /project
+
 ENTRYPOINT ["/entrypoint.sh"]
