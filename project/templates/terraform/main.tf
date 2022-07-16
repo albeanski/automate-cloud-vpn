@@ -70,6 +70,6 @@ resource "aws_instance" "{{ instance_id | default('instance') }}" {
   
   #local-exec runs our app server related playbook
   provisioner "local-exec" {
-    command ="cd /project && ansible-playbook {{ ansible_playbook_init | default('init.yml') }} -i {{ ansible_config_dir }}/aws_ec2.yml --private-key=${var.ssh_private_key} --user ${var.instance_username}"
+    command ="cd {{ project_dir }} && /ansible/run.sh {{ tf_post_apply_playbook }}"
   }
 }

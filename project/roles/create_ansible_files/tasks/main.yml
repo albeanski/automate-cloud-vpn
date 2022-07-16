@@ -1,0 +1,21 @@
+---
+# tasks file for create_ansible_files
+- name: Ensure config path exist
+  ansible.builtin.file:
+    path: "{{ ansible_runtime_dir }}"
+    state: directory
+
+- name: Create Ansible files from template to runtime dir
+  ansible.builtin.template:
+    src: "{{ ansible_template_dir }}/{{ item }}"
+    dest: "{{ ansible_runtime_dir }}/{{ item }}"
+  loop: "{{ ansible_template_files }}"
+
+- name: Create script files from template to runtime dir
+  ansible.builtin.template:
+    src: "{{ ansible_template_dir }}/{{ item }}"
+    dest: "{{ ansible_runtime_dir }}/{{ item }}"
+    mode: "0550"
+  loop: "{{ ansible_template_scripts }}"
+
+

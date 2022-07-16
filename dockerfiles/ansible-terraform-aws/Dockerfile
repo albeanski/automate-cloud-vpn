@@ -5,8 +5,8 @@ USER root
 # Create a group/user and project directory
 RUN apk add groff less
 
-RUN mkdir -p /runtime && \
-  chown -R dev:dev /runtime
+RUN mkdir -p /ansible /terraform && \
+  chown -R dev:dev /ansible /terraform
 
 COPY --from=terraform:latest /bin/terraform /bin/terraform
 

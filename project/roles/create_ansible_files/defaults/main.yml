@@ -1,0 +1,7 @@
+---
+# defaults file for create_ansible_files
+
+aws_instance_name: "{{ lookup('ansible.builtin.env', 'AWS_INSTANCE_NAME') }}"
+aws_access_key:    "{{ lookup('ansible.builtin.env', 'AWS_ACCESS_KEY') }}"
+aws_secret_key:    "{{ lookup('ansible.builtin.env', 'AWS_SECRET_KEY') }}"
+

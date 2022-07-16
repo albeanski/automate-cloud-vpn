@@ -6,5 +6,5 @@ services:
       - "env_vars"
     volumes:
       - ./project:/project
-      - ./runtime:/runtime
+      - ./terraform.tfstate.bak:/terraform/terraform.tfstate
     image: albeanski/ansible-terraform-aws:latest

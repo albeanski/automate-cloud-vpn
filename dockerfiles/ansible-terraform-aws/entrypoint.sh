@@ -4,19 +4,18 @@ if [ -f "requirements.yml" ]; then
   ansible-galaxy install -r requirements.yml
 fi
 
-if [ -f "pip-requirements.txt" ]; then
-  echo "Found pip-requirements.txt. Installing..." 2>&1
-  pip3 install -r pip-requirements.txt
+if [ -f "pip_requirements.txt" ]; then
+  echo "Found pip_requirements.txt. Installing..." 2>&1
+  pip3 install -r pip_requirements.txt
 fi
 
-echo "Running ansible entrypoint.yml playbook" 2>&1
-ansible-playbook entrypoint.yml
-
 if [ "${MANUAL_INSTALL}" = true ]; then
-  echo "MANUAL_INSTALL enabled... Skipping run.sh" 2>&1
+  echo "MANUAL_INSTALL enabled... Skipping startup" 2>&1
 else
-  echo "Running script run.sh" 2>&1
-  ./run.sh
+  echo "Running ansible entrypoint.yml playbook" 2>&1
+  ansible-playbook entrypoint.yml
+  echo "Running script terraform_build.sh" 2>&1
+  ./terraform_build.sh
 fi
 
 echo "Creating endless sleep loop to persist container. Press CTRL+C to exit" 2>&1

@@ -1,0 +1,12 @@
+---
+# vars file for create_ansible_files
+
+ansible_template_dir: "templates/ansible"
+ansible_runtime_dir: "/ansible"
+
+aws_inventory_file: "aws_ec2.yml"
+
+ansible_template_files: ["{{ aws_inventory_file }}", "setup.yml"]
+
+# Scripts get set with a 550 mode to the files when templated
+ansible_template_scripts: ["run.sh"]

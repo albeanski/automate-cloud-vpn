@@ -1,0 +1,9 @@
+---
+# Create all necessary files from templates
+
+- hosts: localhost
+  connection: local
+  gather_facts: no
+  roles:
+    - role: create_ansible_files
+    - role: create_terraform_files

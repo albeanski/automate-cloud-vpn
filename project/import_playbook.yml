@@ -1,0 +1,6 @@
+---
+# import_playbook is necessary because we need to keep the relative playbook directory
+# intact. Running the setup.yml directly using ansible-playbook /runtime/ansible/setup.yml
+# will make the roles/tasks/etc unusable inside the playbook.
+
+- import_playbook: "{{ import_playbook }}"

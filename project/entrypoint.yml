@@ -1,35 +1,4 @@
-- hosts: localhost
-  connection: local
-  gather_facts: no
-  tasks:
-    - name: Ensure config paths exist
-      ansible.builtin.file:
-        path: "{{ item }}"
-        state: directory
-      loop:
-        - "{{ tf_config_dir }}"
-        - "{{ ansible_config_dir }}"
+---
+# This playbook is called from the entrypoint.sh script, initializing files from templates
 
-    - name: Create Terraform tf files from template to config dir
-      ansible.builtin.template:
-        src: "{{ tf_template_dir }}/{{ item }}"
-        dest: "{{ tf_config_dir }}/{{ item }}"
-      loop: "{{ tf_template_files }}"
-
-    - name: Create Ansible files from template to config dir
-      ansible.builtin.template:
-        src: "{{ ansible_template_dir }}/{{ item }}"
-        dest: "{{ ansible_config_dir }}/{{ item }}"
-      loop: "{{ ansible_template_files }}"
-
-    - name: Create Ansible playbook files from template to playbook dir
-      ansible.builtin.template:
-        src: "{{ ansible_template_dir }}/{{ item }}"
-        dest: "{{ ansible_config_dir }}/{{ item }}"
-      loop: "{{ ansible_playbook_files }}"
-      
-    - name: Create a .entrypoint_complete file to ensure proceeding scripts are run at the right time
-      ansible.builtin.file:
-        state: touch
-        dest: ".entrypoint_complete"
-
+- import_playbook: "template_files.yml"
