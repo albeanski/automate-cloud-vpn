@@ -2,11 +2,6 @@
 Automate the deployment of a cloud instance using Terraform and Ansible and create a VPN server for remote access
 e automated build processing is enabled.
 
-### Testing images
-To test an image after a build, create a `test-image.sh` file inside the directory containing the Dockerfile and it will be ran after an image build.
-The build-image.sh script is run as follows: `test-image`
-
-
 ## Quickstart
 ### Required environment variables
 There are a few ways to configure the container, but the simplest is to set the appropriate environment variables. In this example, we will use an `env_vars` file
@@ -64,3 +59,32 @@ does not run ansible-playbook dieextly, but the `/ansible/run.sh` script with `s
 then calls an ansible-playbook with the appropriate inventory, ssh key, and ssh user and passes the first argument
 to a call to `ansible-playbook ... --extra-args "import_playbook=$1"` import_playbook.yml. This is necessaey to separate
 the project/ directory with the sensitive templated config files.
+
+## Building Images
+Dockerfiles can be found in the `./dockerfiles` directory with the name of the image as the subdirectory. There is a `build-image.sh` included
+to simplify the build process.
+### build-image.sh
+When building an image, make sure the appropriate version is set. The version can be found in the `version` file inside the dockerfile directory.
+To build an image:
+```
+./dockerfiles/build-image.sh ${dockerfile_directory}
+```
+So for example:
+```
+./dockerfiles/build-image.sh ./dockerfiles/ansible-terraform-aws/
+```
+
+This will begin the image building process. First the script will run
+```
+docker build -t ${image_name}:${version} -t ${image_name}:${latest} ${1}
+```
+Which looks at the parent directory for the `${image_name}` and `${version}` is taken from the contents of the `version` file. Once the build process is complete, it will attempt to test the image. The process of testing is outlined below.
+
+### Testing images
+To test an image after a build, create a `test-image.sh` file inside the directory containing the Dockerfile and it will be ran after an image build.
+The build-image.sh script is run as follows: `test-image`
+
+### build-image.sh environment variables
+The build-image script can be automated with the following environment variables:
+DOCKER_REMOTE_USER - The script will automatically set the remote user and won't ask for it. 
+BUILD_IMAGE_PUSH - The script will automatically push to the remote repository.
