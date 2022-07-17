@@ -1,0 +1,9 @@
+---
+# Runs after Terraform creates the instance. Installs packages and does the main server setup
+
+- hosts: tag_Name_{{ aws_instance_name }}
+  tasks:
+    - name: Place temporary file im /tmp 
+      ansible.builtin.copy:
+        dest: /tmp/placeholder.txt
+        content: "THIS FILE EXISTING IS PROOF THAT TERRAFOM WAS SUCCESSFUL."

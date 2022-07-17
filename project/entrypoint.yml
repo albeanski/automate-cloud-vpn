@@ -1,0 +1,4 @@
+---
+# This playbook is called from the entrypoint.sh script, initializing files from templates
+
+- import_playbook: "template_files.yml"

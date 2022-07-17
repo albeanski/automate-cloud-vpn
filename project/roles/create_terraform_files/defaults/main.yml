@@ -1,0 +1,26 @@
+---
+# defaults file for create_terraform_files
+
+ssh_public_key:    "{{ lookup('ansible.builtin.env', 'SSH_PUBLIC_KEY',    default=lookup('file', '/project/files/ssh_key.pub') }}"
+ssh_private_key:   "{{ lookup('ansible.builtin.env', 'SSH_PRIVATE_KEY',   default=lookup('file', '/project/files/ssh_key') }}"
+aws_instance_type: "{{ lookup('ansible.builtin.env', 'AWS_INSTANCE_TYPE', default='t2.micro') }}"
+aws_instance_name: "{{ lookup('ansible.builtin.env', 'AWS_INSTANCE_NAME')}}"
+aws_access_key:    "{{ lookup('ansible.builtin.env', 'AWS_ACCESS_KEY')   }}"
+aws_secret_key:    "{{ lookup('ansible.builtin.env', 'AWS_SECRET_KEY')   }}"
+aws_instance_ami:  "{{ lookup('ansible.builtin.env', 'AWS_INSTANCE_AMI') }}"
+aws_region:        "{{ lookup('ansible.builtin.env', 'AWS_REGION')       }}"
+aws_user:          "{{ lookup('ansible.builtin.env', 'AWS_USER')         }}"
+#aws_security_groups:
+#  - name: ssh
+#    id: ssh
+#    vpc: selected
+#    ingresses:
+#      - name: SSH
+#        from_port: 22
+#        to_port: 22
+#        protocol: "tcp"
+#        cidr_blocks:
+#          - 0.0.0.0/0
+#    tags:
+#      - ["Name", "SSH"]
+

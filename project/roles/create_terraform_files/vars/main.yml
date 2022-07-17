@@ -1,0 +1,17 @@
+---
+# vars file for create_terraform_files
+
+project_dir: "/project"
+ansible_runtime_dir: "/ansible"
+aws_inventory_file: "aws_ec2.yml"
+
+tf_post_apply_playbook: "setup.yml"
+tf_post_apply_inventory_path: "{{ ansible_runtime_dir }}/{{ aws_inventory_file }}"
+
+tf_template_files:
+    - "main.tf"
+    - "variables.tf"
+
+tf_template_dir: "templates/terraform"
+tf_runtime_dir: "/terraform"
+

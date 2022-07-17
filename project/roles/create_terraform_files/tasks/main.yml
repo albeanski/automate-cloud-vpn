@@ -1,0 +1,13 @@
+---
+# tasks file for create_terraform_files
+- name: Ensure runtime path exist
+  ansible.builtin.file:
+    path: "{{ tf_runtime_dir }}"
+    state: directory
+
+- name: Create Terraform tf files from template to runtime dir
+  ansible.builtin.template:
+    src: "{{ tf_template_dir }}/{{ item }}"
+    dest: "{{ tf_runtime_dir }}/{{ item }}"
+  loop: "{{ tf_template_files }}"
+
