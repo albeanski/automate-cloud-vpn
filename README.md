@@ -10,6 +10,7 @@ e automated build processing is enabled.
   - [Testing Images](#testing-images)
 
 ## Pre-requisites
+- Must have a basic understanding of Ansible, Docker, and Terraform
 - Docker must be installed on the host machine.
 - You must create or have access to an AWS account
 
@@ -76,7 +77,7 @@ The entrypoint.yml playbook runs the inital setup. It will create all necessary 
 scripts. Then builds and runs the terraform config using the `terraform_build.sh` script.
 
 ### terraform_build.sh
-This script runs the terraform init, plan, and apply commands to spin uo the new instance. If the configuration  has 
+This script runs the terraform init, plan, and apply commands to spin up the new instance. If the configuration  has 
 no errors, main.tf runs a local-exec playbook after creation. 
 
 ### setup.yml
