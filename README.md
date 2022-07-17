@@ -2,12 +2,29 @@
 Automate the deployment of a cloud instance using Terraform and Ansible and create a VPN server for remote access
 e automated build processing is enabled.
 
+## Table of Contents
+- [Pre-requisites](#pre-requisites)
+- [Quickstart](#quickstart)
+- [Process Rundown](#process-rundown)
+- [Building Images](#building-images)
+  - [Testing Images](#testing-images)
+
+## Pre-requisites
+- Docker must be installed on the host machine.
+- You must create or have access to an AWS account
+
 ## Quickstart
-### Required environment variables
-There are a few ways to configure the container, but the simplest is to set the appropriate environment variables. In this example, we will use an `env_vars` file
-to set the environment variables the container needs to run.
-env_vars
+#### 1. Clone the repository
 ```
+git clone https://github.com/albeanski/automate-cloud-vpn/ .
+```
+
+#### 2. Create an `env_vars` file to store required variables the container needs.
+```
+nano env_vars
+```
+**./env_vars**
+```bash
 AWS_INSTANCE_NAME=automate_cloud_vpn                      # The name of the ec2 instance that will be created. Also creates a tag on the instance: Name=$AWS_INSTANCE_NAME 
 AWS_INSTANCE_AMI=ami-abcdefg1234567890                    # The ami id to attach use for the instance
 AWS_ACCESS_KEY=ABCDEFGHIJK123456789                       # The AWS access key
@@ -15,29 +32,38 @@ AWS_SECRET_KEY=ZYXWVUTSRQP987654321                       # The AWS secret key
 AWS_REGION=us-east-1                                      # The region to create the instance in
 AWS_USER=ubuntu                                           # The privileged username to use to ssh into the instance
 ```
+Edit the env_vars file with your information and save.
 
-### Terraform state
-To persist the terraform state after destruction, first create a blank `terraform.tfstate` file.
-`touch terraform.tfstate`
+#### 3. Create an empty `terraform.tfstate` terraform state file. This will allow you to persist the terraform state after destruction.
+```
+touch terraform.tfstate
+```
 Then add a bind mount to the docker-compose file:
+**./docker-compose.yml**
 ```
   ...
   volumes:
     - ./terraform.tfstate:/terraform/terraform.tfstate
   ...
 ```
+(Or if you have a terraform state already that you want to use bind that .tfstate file to `/terraform/terraform.state`)
 
-Or if you have a terraform state already that you want to use bind that .tfstate file to `/terraform/terraform.state`
+#### 4. Generate ssh keys
+Use the `generate_ssh_keys.sh` script to create ssh keys that terraform and ansible will use.
+```
+./generate_ssh_keys.sh
+```
 
-### Docker-compose
-Run docker-compose in detached mode using: 
-`docker-compose up -d`
+#### 5. Run docker-compose in detached mode using: 
+```
+docker-compose up -d
+```
 To follow the logs as the container is created and set up use:
 `docker logs -f <container_name>`
 So in the case of the included docker-compose file:
 `docker logs -f automate-cloud-vpn`
 
-The container should do all the setup and installation automatically. Howevee, if you need to test out new scripts
+The container should do all the setup and installation automatically. However, if you need to test out new scripts
 or configurations, move on to the following section.
 
 ## Process Rundown
