@@ -98,7 +98,7 @@ To build an image:
 ```
 So for example:
 ```
-./dockerfiles/build-image.sh ./dockerfiles/ansible-terraform-aws/
+./dockerfiles/build-image.sh ./dockerfiles/ansible-terraform-aws
 ```
 
 This will begin the image building process. First the script will run
@@ -112,6 +112,11 @@ To test an image after a build, create a `test-image.sh` file inside the directo
 The build-image.sh script is run as follows: `test-image`
 
 ### build-image.sh environment variables
-The build-image script can be automated with the following environment variables:
-DOCKER_REMOTE_USER - The script will automatically set the remote user and won't ask for it. 
-BUILD_IMAGE_PUSH - The script will automatically push to the remote repository.
+The build-image script can be automated with the following environment variables: \
+`DOCKER_REMOTE_USER` - The script will automatically set the remote user to this environment variable's value and won't ask for it. \
+`BUILD_IMAGE_PUSH` - The script will automatically push to the remote repository (accepted values: true, false).
+To run the script using these environment variables:
+```
+DOCKER_REMOTE_USER=myremoteuser BUILD_IMAGE_PUSH=true ./dockerfiles/build-image.sh ./dockerfiles/ansible-terraform-aws
+```
+
