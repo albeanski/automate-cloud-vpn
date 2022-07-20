@@ -1,0 +1,41 @@
+---
+# Adapted from: https://jawher.me/wireguard-ansible-systemd-ubuntu/
+#          and: https://dev.to/tangramvision/exploring-ansible-via-setting-up-a-wireguard-vpn-3389
+#
+# tasks file for wireguard_setup
+- name: Generate Wireguard keypair
+  ansible.builtin.shell: > 
+    wg genkey | 
+    tee /etc/wireguard/privatekey | 
+    wg pubkey | 
+    tee /etc/wireguard/publickey
+  args:
+    creates: /etc/wireguard/privatekey
+#  become: yes
+
+- name: Register private key
+  ansible.builtin.shell: cat /etc/wireguard/privatekey
+  register: wireguard_private_key
+  changed_when: false
+#  become: yes
+
+- name: Register public key
+  ansible.builtin.shell: cat /etc/wireguard/publickey
+  register: wireguard_public_key
+  changed_when: false
+#  become: yes
+
+- name: Create server wireguard config
+  ansible.builtin.template:
+    dest: "/etc/wireguard/wg0.conf"
+    src: "{{ wireguard_template_dir }}/wg0.conf"
+#    owner: root
+#    group: root
+    mode: '0600'
+  
+- name: Start wireguard and enable on boot
+  systemd:
+    name: wg-quick@wg0
+    enabled: yes
+    state: started
+

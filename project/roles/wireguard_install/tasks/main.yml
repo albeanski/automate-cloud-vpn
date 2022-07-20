@@ -1,0 +1,5 @@
+---
+# tasks file for wireguard_install
+- name: Include OS specific tasks to install wireguard
+  include_tasks: "{{ ansible_distribution | default(ansible_lisb['id']) | lower }}.yml"
+  when: not wireguard_skip_install

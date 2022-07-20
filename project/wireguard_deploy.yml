@@ -1,0 +1,4 @@
+- hosts: all
+  roles:
+    - role: wireguard_install
+    - role: wireguard_setup

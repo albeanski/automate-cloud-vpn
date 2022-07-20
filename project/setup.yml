@@ -1,0 +1,4 @@
+---
+# Runs after Terraform creates the instance. Installs packages and does the main server setup
+
+- import_playbook: wireguard_deploy.yml

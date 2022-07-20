@@ -6,7 +6,7 @@ ansible_runtime_dir: "/ansible"
 
 aws_inventory_file: "aws_ec2.yml"
 
-ansible_template_files: ["{{ aws_inventory_file }}", "setup.yml"]
+ansible_template_files: ["{{ aws_inventory_file }}"]
 
 # Scripts get set with a 550 mode to the files when templated
 ansible_template_scripts: ["run.sh"]
