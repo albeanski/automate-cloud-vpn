@@ -13,8 +13,26 @@ e automated build processing is enabled.
 - Must have a basic understanding of Ansible, Docker, and Terraform
 - Docker must be installed on the host machine.
 - You must create or have access to an AWS account
+- A wireguard client machine to test the connection. This can be another workstation/vm/machine or the docker host itself.
 
 ## Quickstart
+#### 1. Install wireguard on the client machine
+In order to test the wireguard connection we need another machine as the client. For simplicity, we will use the docker host machine as the client. The following installs onto Ubuntu and will likely work on other Debian based operating systems (see the [wireguard installation](www.wireguard.com/install)  documentation for your specific OS).
+
+Update the apt repository & Install the wireguard package
+```bash
+sudo apt update
+sudo apt install -y wireguard
+```
+
+#### 2. Setup and configure wireguard
+
+Generate the private/public wireguard keys
+```bash
+
+```
+
+
 #### 1. Clone the repository
 ```
 git clone https://github.com/albeanski/automate-cloud-vpn/ .
