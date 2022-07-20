@@ -16,22 +16,6 @@ e automated build processing is enabled.
 - A wireguard client machine to test the connection. This can be another workstation/vm/machine or the docker host itself.
 
 ## Quickstart
-#### 1. Install wireguard on the client machine
-In order to test the wireguard connection we need another machine as the client. For simplicity, we will use the docker host machine as the client. The following installs onto Ubuntu and will likely work on other Debian based operating systems (see the [wireguard installation](www.wireguard.com/install)  documentation for your specific OS).
-
-Update the apt repository & Install the wireguard package
-```bash
-sudo apt update
-sudo apt install -y wireguard
-```
-
-#### 2. Setup and configure wireguard
-
-Generate the private/public wireguard keys
-```bash
-
-```
-
 
 #### 1. Clone the repository
 ```
@@ -51,7 +35,9 @@ AWS_SECRET_KEY=ZYXWVUTSRQP987654321                       # The AWS secret key
 AWS_REGION=us-east-1                                      # The region to create the instance in
 AWS_USER=ubuntu                                           # The privileged username to use to ssh into the instance
 ```
+
 Edit the env_vars file with your information and save.
+See [ENV.md](ENV.md) for a full list of environment variables the container accepts.
 
 #### 3. Create an empty `terraform.tfstate` terraform state file. This will allow you to persist the terraform state after destruction.
 ```
@@ -84,6 +70,46 @@ So in the case of the included docker-compose file:
 
 The container should do all the setup and installation automatically. However, if you need to test out new scripts
 or configurations, move on to the following section.
+
+#### 6. Install wireguard on the client machine
+In order to test the wireguard connection we need another machine as the client. For simplicity, we will use the docker host machine as the client. The following installs onto Ubuntu and will likely work on other Debian based operating systems (see the [wireguard installation](www.wireguard.com/install)  documentation for your specific OS).
+
+Update the apt repository & Install the wireguard package
+```bash
+sudo apt update
+sudo apt install -y wireguard
+```
+
+#### 7. Setup and configure wireguard on the client
+
+Copy the client private wireguard keys.
+```bash
+docker exec -it automate-cloud-vpn cat /wireguard/client_private_key > /etc/wireguard/privatekey
+```
+```bash
+docker exec -it automate-cloud-vpn cat /wireguard/client_private_key > /etc/wireguard/publickey
+```
+
+Copy the client wg0 interface config
+```bash
+docker exec -it automate-cloud-vpn cat /wireguard/client_wg0.conf > /etc/wireguard/wg0.conf
+```
+
+Quick start wireguard using wg0
+```bash
+wg-quick up wg0
+```
+
+#### Final notes
+You should now have a new aws instance with wireguard installed and configured as
+well as a client side installation of wireguard on your local machine. Ping the 
+aws instance on the wireguard subnet. The default value should be 10.11.12.1 unless
+you overrode it with the `WIREGUARD_SERVER_IP` environment variable.
+
+```bash
+ping 10.11.12.1
+```
+
 
 ## Process Rundown
 ### entrypoint.sh
