@@ -82,16 +82,12 @@ sudo apt install -y wireguard
 
 #### 7. Setup and configure wireguard on the client
 
-Copy the client private wireguard keys.
+Copy the client private and public wireguard keys as well as the wg0 interface config.
+> Use the `fetch_wireguard_files.sh` script to do this for you. `./fetch_wireguard_files.sh`
+
 ```bash
 docker exec -it automate-cloud-vpn cat /wireguard/client_private_key > /etc/wireguard/privatekey
-```
-```bash
 docker exec -it automate-cloud-vpn cat /wireguard/client_private_key > /etc/wireguard/publickey
-```
-
-Copy the client wg0 interface config
-```bash
 docker exec -it automate-cloud-vpn cat /wireguard/client_wg0.conf > /etc/wireguard/wg0.conf
 ```
 
