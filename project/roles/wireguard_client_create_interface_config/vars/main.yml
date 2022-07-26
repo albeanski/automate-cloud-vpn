@@ -1,0 +1,12 @@
+---
+# vars file for wireguard_client_create_keys
+wireguard_template_dir: templates/wireguard
+wireguard_runtime_dir: /wireguard
+
+wireguard_client_privatekey_file: "{{ wireguard_runtime_dir }}/client_privatekey"
+wireguard_client_publickey_file: "{{ wireguard_runtime_dir }}/client_publickey"
+wireguard_client_privatekey: "{{ lookup('file', wireguard_client_privatekey_file) }}"
+wireguard_client_publickey: "{{ lookup('file', wireguard_client_publickey_file) }}"
+
+wireguard_server_publickey: "{{ hostvars[groups['tag_Name_' + aws_instance_name][0]].wireguard_server_publickey }}"
+

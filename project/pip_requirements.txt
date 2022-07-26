@@ -1,1 +1,5 @@
+# required for aws dynamic inventory plugin
 boto3
+
+# required for ipaddr
+netaddr

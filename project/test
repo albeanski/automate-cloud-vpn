@@ -1,5 +1,0 @@
-- hosts: all
-#  connection: local
-  tasks:
-    - debug:
-        msg: "{{ wireguard_wg0_ip }}"

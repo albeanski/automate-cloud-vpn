@@ -1,4 +1,27 @@
-- hosts: all
+- hosts: aws_ec2
   roles:
     - role: wireguard_install
-    - role: wireguard_setup
+    - role: wireguard_server_system_setup
+    - role: wireguard_server_create_keys
+
+- hosts: localhost
+  roles:
+    - role: wireguard_client_create_keys
+
+# Wireguard public and private keys must be created first because interfaces reference both server and client keys
+# then we can create the interfaces below
+- hosts: localhost
+  roles:
+    - role: wireguard_client_create_interface_config
+
+- hosts: aws_ec2
+  roles:
+    - role: wireguard_server_create_interface_config
+
+  tasks:
+    - name: start wireguard and enable on boot
+      become: yes
+      ansible.builtin.systemd:
+        name: wg-quick@wg0
+        enabled: yes
+        state: started  

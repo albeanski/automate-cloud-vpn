@@ -10,6 +10,11 @@ aws_instance_ami:  "{{ lookup('ansible.builtin.env', 'AWS_INSTANCE_AMI')  | mand
 aws_region:        "{{ lookup('ansible.builtin.env', 'AWS_REGION')        | mandatory }}"
 aws_user:          "{{ lookup('ansible.builtin.env', 'AWS_USER')          | mandatory }}"
 
+wireguard_server_ip: "{{ lookup('ansible.builtin.env', 'WIREGUARD_SERVER_IP', default='10.11.12.1/24') }}"
+wireguard_client_ip: "{{ lookup('ansible.builtin.env', 'WIREGUARD_CLIENT_IP', default='10.11.12.2/24') }}"
+wireguard_subnet: "{{ lookup('ansible.builtin.env', 'WIREGUARD_SUBNET', default='10.11.12.0/24') }}"
+wireguard_port: "{{ lookup('ansible.builtin.env', 'WIREGUARD_PORT', default='51820') }}"
+
 ansible_user: "{{ aws_user }}"
 
 aws_security_groups:
@@ -24,5 +29,13 @@ aws_security_groups:
         cidr_blocks:
           - 0.0.0.0/0
 
+      - name: Wireguard
+        from_port: "{{ wireguard_port }}"
+        to_port: "{{ wireguard_port }}"
+        protocol: "udp"
+        cidr_blocks:
+          - 0.0.0.0/0
+
     tags:
       - ["Name", "SSH"]
+

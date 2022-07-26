@@ -1,0 +1,31 @@
+---
+# Adapted from: https://jawher.me/wireguard-ansible-systemd-ubuntu/
+#          and: https://dev.to/tangramvision/exploring-ansible-via-setting-up-a-wireguard-vpn-3389
+#
+# tasks file for wireguard_server_create_keys
+- name: Generate Wireguard keypair
+  become: yes
+  ansible.builtin.shell: > 
+    wg genkey | 
+    tee {{ wireguard_server_privatekey_file }} | 
+    wg pubkey | 
+    tee {{ wireguard_server_publickey_file }}
+  args:
+    creates: "{{ wireguard_server_privatekey_file }}"
+
+- name: Slurp wireguard server privatekey
+  become: yes
+  ansible.builtin.slurp:
+    src: "{{ wireguard_server_privatekey_file }}"
+  register: privatekey
+
+- name: Slurp wireguard server publickey
+  become: yes
+  ansible.builtin.slurp:
+    src: "{{ wireguard_server_publickey_file }}"
+  register: publickey
+
+
+- set_fact:
+    wireguard_server_privatekey: "{{ privatekey['content'] | b64decode}}"
+    wireguard_server_publickey: "{{ publickey['content'] | b64decode }}"
