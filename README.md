@@ -2,29 +2,32 @@
 Automate the deployment of a cloud instance using Terraform and Ansible and create a VPN server for remote access
 e automated build processing is enabled.
 
-## Building Dockerfiles
-Use the image builder script to automate image tagging.
+## Table of Contents
+- [Pre-requisites](#pre-requisites)
+- [Quickstart](#quickstart)
+- [Process Rundown](#process-rundown)
+- [Building Images](#building-images)
+  - [Testing Images](#testing-images)
 
-```
-build-image.sh [directory containing Dockerfile]
-
-examples:
-
-./dockerfiles/build-image.sh ./dockerfiles/ansbile-terraform/
-
-```
-
-### Testing images
-To test an image after a build, create a `test-image.sh` file inside the directory containing the Dockerfile and it will be ran after an image build.
-The build-image.sh script is run as follows: `test-image`
-
+## Pre-requisites
+- Must have a basic understanding of Ansible, Docker, and Terraform
+- Docker must be installed on the host machine.
+- You must create or have access to an AWS account
+- A wireguard client machine to test the connection. This can be another workstation/vm/machine or the docker host itself.
 
 ## Quickstart
-### Required environment variables
-There are a few ways to configure the container, but the simplest is to set the appropriate environment variables. In this example, we will use an `env_vars` file
-to set the environment variables the container needs to run.
-env_vars
+
+#### 1. Clone the repository
 ```
+git clone https://github.com/albeanski/automate-cloud-vpn/ .
+```
+
+#### 2. Create an `env_vars` file to store required variables the container needs.
+```
+nano env_vars
+```
+**./env_vars**
+```bash
 AWS_INSTANCE_NAME=automate_cloud_vpn                      # The name of the ec2 instance that will be created. Also creates a tag on the instance: Name=$AWS_INSTANCE_NAME 
 AWS_INSTANCE_AMI=ami-abcdefg1234567890                    # The ami id to attach use for the instance
 AWS_ACCESS_KEY=ABCDEFGHIJK123456789                       # The AWS access key
@@ -33,29 +36,80 @@ AWS_REGION=us-east-1                                      # The region to create
 AWS_USER=ubuntu                                           # The privileged username to use to ssh into the instance
 ```
 
-### Terraform state
-To persist the terraform state after destruction, first create a blank `terraform.tfstate` file.
-`touch terraform.tfstate`
+Edit the env_vars file with your information and save.
+See [ENV.md](ENV.md) for a full list of environment variables the container accepts.
+
+#### 3. Create an empty `terraform.tfstate` terraform state file. This will allow you to persist the terraform state after destruction.
+```
+touch terraform.tfstate
+```
 Then add a bind mount to the docker-compose file:
+**./docker-compose.yml**
 ```
   ...
   volumes:
     - ./terraform.tfstate:/terraform/terraform.tfstate
   ...
 ```
+(Or if you have a terraform state already that you want to use bind that .tfstate file to `/terraform/terraform.state`)
 
-Or if you have a terraform state already that you want to use bind that .tfstate file to `/terraform/terraform.state`
+#### 4. Generate ssh keys
+Use the `generate_ssh_keys.sh` script to create ssh keys that terraform and ansible will use.
+```
+./generate_ssh_keys.sh
+```
 
-### Docker-compose
-Run docker-compose in detached mode using: 
-`docker-compose up -d`
+#### 5. Run docker-compose in detached mode using: 
+```
+docker-compose up -d
+```
 To follow the logs as the container is created and set up use:
 `docker logs -f <container_name>`
 So in the case of the included docker-compose file:
 `docker logs -f automate-cloud-vpn`
 
-The container should do all the setup and installation automatically. Howevee, if you need to test out new scripts
+The container should do all the setup and installation automatically. However, if you need to test out new scripts
 or configurations, move on to the following section.
+
+#### 6. Install wireguard on the client machine
+In order to test the wireguard connection we need another machine as the client. For simplicity, we will use the docker host machine as the client. The following installs onto Ubuntu and will likely work on other Debian based operating systems (see the [wireguard installation](www.wireguard.com/install)  documentation for your specific OS).
+
+Update the apt repository & Install the wireguard package
+```bash
+sudo apt update
+sudo apt install -y wireguard
+```
+
+#### 7. Setup and configure wireguard on the client
+
+Copy the client private wireguard keys.
+```bash
+docker exec -it automate-cloud-vpn cat /wireguard/client_private_key > /etc/wireguard/privatekey
+```
+```bash
+docker exec -it automate-cloud-vpn cat /wireguard/client_private_key > /etc/wireguard/publickey
+```
+
+Copy the client wg0 interface config
+```bash
+docker exec -it automate-cloud-vpn cat /wireguard/client_wg0.conf > /etc/wireguard/wg0.conf
+```
+
+Quick start wireguard using wg0
+```bash
+wg-quick up wg0
+```
+
+#### Final notes
+You should now have a new aws instance with wireguard installed and configured as
+well as a client side installation of wireguard on your local machine. Ping the 
+aws instance on the wireguard subnet. The default value should be 10.11.12.1 unless
+you overrode it with the `WIREGUARD_SERVER_IP` environment variable.
+
+```bash
+ping 10.11.12.1
+```
+
 
 ## Process Rundown
 ### entrypoint.sh
@@ -67,7 +121,7 @@ The entrypoint.yml playbook runs the inital setup. It will create all necessary 
 scripts. Then builds and runs the terraform config using the `terraform_build.sh` script.
 
 ### terraform_build.sh
-This script runs the terraform init, plan, and apply commands to spin uo the new instance. If the configuration  has 
+This script runs the terraform init, plan, and apply commands to spin up the new instance. If the configuration  has 
 no errors, main.tf runs a local-exec playbook after creation. 
 
 ### setup.yml
@@ -76,4 +130,37 @@ does not run ansible-playbook dieextly, but the `/ansible/run.sh` script with `s
 then calls an ansible-playbook with the appropriate inventory, ssh key, and ssh user and passes the first argument
 to a call to `ansible-playbook ... --extra-args "import_playbook=$1"` import_playbook.yml. This is necessaey to separate
 the project/ directory with the sensitive templated config files.
+
+## Building Images
+Dockerfiles can be found in the `./dockerfiles` directory with the name of the image as the subdirectory. There is a `build-image.sh` included
+to simplify the build process.
+### build-image.sh
+When building an image, make sure the appropriate version is set. The version can be found in the `version` file inside the dockerfile directory.
+To build an image:
+```
+./dockerfiles/build-image.sh ${dockerfile_directory}
+```
+So for example:
+```
+./dockerfiles/build-image.sh ./dockerfiles/ansible-terraform-aws
+```
+
+This will begin the image building process. First the script will run
+```
+docker build -t ${image_name}:${version} -t ${image_name}:${latest} ${1}
+```
+Which looks at the parent directory for the `${image_name}` and `${version}` is taken from the contents of the `version` file. Once the build process is complete, it will attempt to test the image. The process of testing is outlined below.
+
+### Testing images
+To test an image after a build, create a `test-image.sh` file inside the directory containing the Dockerfile and it will be ran after an image build.
+The build-image.sh script is run as follows: `test-image`
+
+### build-image.sh environment variables
+The build-image script can be automated with the following environment variables: \
+`DOCKER_REMOTE_USER` - The script will automatically set the remote user to this environment variable's value and won't ask for it. \
+`BUILD_IMAGE_PUSH` - The script will automatically push to the remote repository (accepted values: true, false).
+To run the script using these environment variables:
+```
+DOCKER_REMOTE_USER=myremoteuser BUILD_IMAGE_PUSH=true ./dockerfiles/build-image.sh ./dockerfiles/ansible-terraform-aws
+```
 
