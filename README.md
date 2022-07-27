@@ -44,7 +44,7 @@ touch terraform.tfstate
 ```
 Then add a bind mount to the docker-compose file:
 **./docker-compose.yml**
-```
+```yanl
   ...
   volumes:
     - ./terraform.tfstate:/terraform/terraform.tfstate
@@ -58,7 +58,29 @@ Use the `generate_ssh_keys.sh` script to create ssh keys that terraform and ansi
 ./generate_ssh_keys.sh
 ```
 
-#### 5. Run docker-compose in detached mode using: 
+#### 5. Enable Terraform Auto Approve
+When using the Terraform apply command normanally, the following interactive confirmation is 
+prompted:
+```
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value:
+```
+This allows you to review the configuration changes before it is deployed. However, we will enable 
+auto-autoapprove to skip this prompt. See [Interactive Terraform Apply](#interactive-terraform-apply)
+if you want to review and apply the terraform configuration manually.
+
+Set the `TERRAFORM_AUTO_APPROVE` environment variable in the docker-compose file to 'true':
+```yanl
+  ...
+  environment:
+    - TERRAFORM_AUTO_APPROVE=true
+  ...
+```
+
+#### 6. Run docker-compose in detached mode using: 
 ```
 docker-compose up -d
 ```
@@ -70,7 +92,7 @@ So in the case of the included docker-compose file:
 The container should do all the setup and installation automatically. However, if you need to test out new scripts
 or configurations, move on to the following section.
 
-#### 6. Install wireguard on the client machine
+#### 7. Install wireguard on the client machine
 In order to test the wireguard connection we need another machine as the client. For simplicity, we will use the docker host machine as the client. The following installs onto Ubuntu and will likely work on other Debian based operating systems (see the [wireguard installation](www.wireguard.com/install)  documentation for your specific OS).
 
 Update the apt repository & Install the wireguard package
@@ -79,7 +101,7 @@ sudo apt update
 sudo apt install -y wireguard
 ```
 
-#### 7. Setup and configure wireguard on the client
+#### 8. Setup and configure wireguard on the client
 
 Copy the client private and public wireguard keys as well as the wg0 interface config.
 > Use the `fetch_wireguard_files.sh` script to do this for you. `./fetch_wireguard_files.sh`
@@ -104,3 +126,6 @@ you overrode it with the `WIREGUARD_SERVER_IP` environment variable.
 ```bash
 ping 10.11.12.1
 ```
+
+
+### Interactive Terraform Apply
