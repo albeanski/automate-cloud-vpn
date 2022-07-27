@@ -138,7 +138,7 @@ docker logs -f automate_cloud_vpn
 ```
 
 If `terraform plan` has completes, the output should be similar to the following:
-```bash
+```
 *******************************************************************************************
 TERRAFORM_AUTO_APPROVE is false or has not been set and Terraform must be applied manually.
 If you want to automate the next steps, enable it and recreate the container.
