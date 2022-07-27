@@ -129,7 +129,7 @@ ping 10.11.12.1
 
 
 ### Interactive Terraform Apply
-If TERRAFORM_AUTO_APPROVE is unset or set to false, `terrform` apply must be run manually after 
+If TERRAFORM_AUTO_APPROVE is unset or set to false, `terraform apply` must be run manually after 
 spinning up the container.
 
 First make sure `terraform plan` has completed. Check the logs to confirm:
