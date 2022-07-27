@@ -129,3 +129,33 @@ ping 10.11.12.1
 
 
 ### Interactive Terraform Apply
+If TERRAFORM_AUTO_APPROVE is unset or set to false, `terrform` apply must be run manually after 
+spinning up the container.
+
+First make sure `terraform plan` has completed. Check the logs to confirm:
+```bash
+docker logs -f automate_cloud_vpn
+```
+
+If `terraform plan` has completes, the output should be similar to the following:
+```bash
+*******************************************************************************************
+TERRAFORM_AUTO_APPROVE is false or has not been set and Terraform must be applied manually.
+If you want to automate the next steps, enable it and recreate the container.
+To continue the process use the following command but replace <container_name>
+with the name of this container (default: automate_cloud_vpn):
+
+docker exec -ti <container_name> terraform -chdir=/terraform apply
+
+for example:
+docker exec -ti automate-cloud-vpn terraform -chdir=/terraform apply
+
+*******************************************************************************************
+
+Creating endless sleep loop to persist container. Press CTRL+C to exit
+```
+
+Copy the docker exec command and run it:
+```
+docker exec -ti automate-cloud-vpn terraform -chdir=/terraform apply
+```
