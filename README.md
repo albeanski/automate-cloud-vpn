@@ -159,3 +159,6 @@ Copy the docker exec command and run it:
 ```
 docker exec -ti automate-cloud-vpn terraform -chdir=/terraform apply
 ```
+
+This will begin the creation of the AWS instance and the rest of the
+automation process will continue as normal.
