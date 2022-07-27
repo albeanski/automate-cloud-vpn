@@ -1,7 +1,12 @@
 #/bin/sh
-private_key="${PWD}/files/ssh_key"
+key_directory="${PWD}/files"
+private_key="${key_directory}/ssh_key"
 public_key="${private_key}.pub"
 
+if [ ! -d "${key_directory}" ]; then
+  "Creating '${key_directory}' directory..."
+  mkdir "${key_directory}"
+fi
 
 # Generate an ssh keypair with no password and place in files directory
 if ssh-keygen -f "${private_key}" -P ""; then

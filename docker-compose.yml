@@ -1,9 +1,11 @@
 version: "3.3"
 services:
-  ansible:
+  app:
     container_name: automate-cloud-vpn
     env_file: 
-      - "env_vars"
+      - "env_vars"                      # private environment variables
+    environment:
+      - TERRAFORM_AUTO_APPROVE=false    # change this to 'true' for full automation
     volumes:
       - ./project:/project
       - ./terraform.tfstate:/terraform/terraform.tfstate
