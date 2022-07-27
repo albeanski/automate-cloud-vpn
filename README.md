@@ -69,7 +69,7 @@ Do you want to perform these actions?
   Enter a value:
 ```
 This allows you to review the configuration changes before it is deployed. However, we will enable 
-auto-autoapprove to skip this prompt. See [Interactive Terraform Apply](#interactive-terraform-apply)
+auto-approve to skip this prompt. See [Interactive Terraform Apply](#interactive-terraform-apply)
 if you want to review and apply the terraform configuration manually.
 
 Set the `TERRAFORM_AUTO_APPROVE` environment variable in the docker-compose file to 'true':
