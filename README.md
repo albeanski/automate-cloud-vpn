@@ -2,18 +2,21 @@
 Automate the deployment of a cloud instance using Terraform and Ansible and create a VPN server for remote access
 e automated build processing is enabled.
 
-See the [development documentation](DEV.md) for more information.
+> See the [development documentation](DEV.md) for more information.
 
+---
 ## Table of Contents
 - [Pre-requisites](#pre-requisites)
 - [Quickstart](#quickstart)
 
+---
 ## Pre-requisites
 - Must have a basic understanding of Ansible, Docker, and Terraform
 - Docker must be installed on the host machine.
 - You must create or have access to an AWS account
 - A wireguard client machine to test the connection. This can be another workstation/vm/machine or the docker host itself.
 
+---
 ## Quickstart
 
 #### 1. Clone the repository
@@ -129,7 +132,7 @@ you overrode it with the `WIREGUARD_SERVER_IP` environment variable.
 ping 10.11.12.1
 ```
 
-
+---
 ### Interactive Terraform Apply
 If TERRAFORM_AUTO_APPROVE is unset or set to false, `terraform apply` must be run manually after 
 spinning up the container.
