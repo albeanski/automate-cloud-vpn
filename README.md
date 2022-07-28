@@ -79,7 +79,7 @@ Set the `TERRAFORM_AUTO_APPROVE` environment variable in the docker-compose file
     - TERRAFORM_AUTO_APPROVE=true
   ...
 ```
-Now the entire autonation process will complete when creating the container, and no more user
+Now the entire automation process will complete when creating the container, and no more user
 interaction is required. 
  
 #### 6. Run docker-compose in detached mode using: 
