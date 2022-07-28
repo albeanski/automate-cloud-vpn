@@ -59,7 +59,7 @@ Use the `generate_ssh_keys.sh` script to create ssh keys that terraform and ansi
 ```
 
 #### 5. Enable Terraform Auto Approve
-When using the Terraform apply command normanally, the following interactive confirmation is 
+When using the Terraform apply command normally, the following interactive confirmation is 
 prompted:
 ```
 Do you want to perform these actions?
@@ -69,7 +69,7 @@ Do you want to perform these actions?
   Enter a value:
 ```
 This allows you to review the configuration changes before it is deployed. However, we will enable 
-auto-autoapprove to skip this prompt. See [Interactive Terraform Apply](#interactive-terraform-apply)
+auto-approve to skip this prompt. See [Interactive Terraform Apply](#interactive-terraform-apply)
 if you want to review and apply the terraform configuration manually.
 
 Set the `TERRAFORM_AUTO_APPROVE` environment variable in the docker-compose file to 'true':
@@ -79,7 +79,9 @@ Set the `TERRAFORM_AUTO_APPROVE` environment variable in the docker-compose file
     - TERRAFORM_AUTO_APPROVE=true
   ...
 ```
-
+Now the entire autonation process will complete when creating the container, and no more user
+interaction is required. 
+ 
 #### 6. Run docker-compose in detached mode using: 
 ```
 docker-compose up -d
