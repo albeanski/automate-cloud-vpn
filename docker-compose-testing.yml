@@ -3,8 +3,8 @@ services:
   app:
     volumes:
       - ./wireguard_client_config:/wireguard/client
-  wg-client:
-    container_name: automate-cloud-vpn-wg-client
+  testing:
+    container_name: automate-cloud-vpn-testing
     cap_add:
       - NET_ADMIN
       - SYS_MODULE
