@@ -3,8 +3,14 @@
 #          and: https://dev.to/tangramvision/exploring-ansible-via-setting-up-a-wireguard-vpn-3389
 #
 # tasks file for wireguard_client_create_interface_config
+- name: Ensure dest template directory exists
+  file:
+    path: "{{ wireguard_runtime_dir }}"
+    mode: "0750"
+    state: directory
+
 - name: Create client wireguard interface config
   ansible.builtin.template:
-    dest: "{{ wireguard_runtime_dir }}/client_wg0.conf"
+    dest: "{{ wireguard_runtime_dir }}/client/wg0.conf"
     src: "{{ wireguard_template_dir }}/client_wg0.conf"
     mode: '0600'

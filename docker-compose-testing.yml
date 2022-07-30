@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+  app:
+    volumes:
+      - ./wireguard_client_config:/wireguard/client
+  wg-client:
+    container_name: automate-cloud-vpn-wg-client
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    volumes:
+      - ./wireguard_client_config:/wireguard
+    image: albeanski/wireguard:latest
+

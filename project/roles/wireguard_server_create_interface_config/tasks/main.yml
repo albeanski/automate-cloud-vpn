@@ -3,9 +3,13 @@
 #          and: https://dev.to/tangramvision/exploring-ansible-via-setting-up-a-wireguard-vpn-3389
 #
 # tasks file for wireguard_server_create_interface_config
+- debug:
+    var: hostvars['localhost'].wireguard_client_publickey
+
 - name: Create server wireguard interface config
   become: yes
   ansible.builtin.template:
     src: "{{ wireguard_template_dir }}/server_wg0.conf"
     dest: "/etc/wireguard/wg0.conf"
     mode: '0600'
+  notify: reload wireguard interface config

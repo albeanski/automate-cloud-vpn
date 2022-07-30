@@ -60,11 +60,13 @@ if [ ! -z "${path}" ] && [ ! -d "${path}" ]; then
   exit 1
 fi
 
-echo "docker exec ${container_name} cat /wireguard/client_privatekey | sudo tee ${path}/privatekey"
-docker exec ${container_name} cat /wireguard/client_privatekey | sudo tee "${path}/privatekey" > /dev/null
+container_path="/wireguard/client"
 
-echo "docker exec ${container_name} cat /wireguard/client_publickey | sudo tee ${path}/publickey"
-docker exec ${container_name} cat /wireguard/client_publickey | sudo tee "${path}/publickey" > /dev/null
+echo "docker exec ${container_name} cat ${container_path}/privatekey | sudo tee ${path}/privatekey"
+docker exec ${container_name} cat ${container_path}/privatekey | sudo tee "${path}/privatekey" > /dev/null
 
-echo "docker exec ${container_name} cat /wireguard/client_wg0.conf | sudo tee ${path}/wg0.conf"
-docker exec ${container_name} cat /wireguard/client_wg0.conf | sudo tee "${path}/wg0.conf" > /dev/null
+echo "docker exec ${container_name} cat ${container_path}/publickey | sudo tee ${path}/publickey"
+docker exec ${container_name} cat ${container_path}/publickey | sudo tee "${path}/publickey" > /dev/null
+
+echo "docker exec ${container_name} cat ${container_path}/wg0.conf | sudo tee ${path}/wg0.conf"
+docker exec ${container_name} cat ${container_path}/wg0.conf | sudo tee "${path}/wg0.conf" > /dev/null

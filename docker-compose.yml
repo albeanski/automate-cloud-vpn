@@ -5,8 +5,12 @@ services:
     env_file: 
       - "env_vars"                      # private environment variables
     environment:
-      - TERRAFORM_AUTO_APPROVE=false    # change this to 'true' for full automation
+      - TERRAFORM_AUTO_APPROVE=true    # change this to 'true' for full automation
     volumes:
       - ./project:/project
       - ./terraform.tfstate:/terraform/terraform.tfstate
+#      - wireguard-volume:/wireguard
     image: albeanski/ansible-terraform-aws-wg:latest
+
+#volumes:
+#  wireguard-volume:

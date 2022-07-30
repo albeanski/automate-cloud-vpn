@@ -2,3 +2,4 @@ project/files/ssh_key*
 env_vars
 *.tfstate*
 *.save
+wireguard_client_config

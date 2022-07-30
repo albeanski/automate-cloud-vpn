@@ -3,7 +3,7 @@ FROM ansible-terraform-aws:latest
 USER root
 
 RUN apk add wireguard-tools && \
-  mkdir -p /wireguard && \
+  mkdir -p /wireguard/client && \
   chown -R dev:dev /wireguard
 
 RUN wg genkey | \
