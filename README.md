@@ -49,6 +49,11 @@ AWS_USER=ubuntu                                           # The privileged usern
 Edit the env_vars file with your information and save.
 See [ENV.md](ENV.md) for a full list of environment variables the container accepts.
 
+Restrict permissions of `env_vars` to user only:
+```
+chmod 660 env_vars
+```
+
 #### 3. Volume Mounts
 Create an empty `terraform.tfstate` terraform state file. This will allow you to persist the terraform state after destruction.
 ```
