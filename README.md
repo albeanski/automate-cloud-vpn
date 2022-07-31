@@ -126,10 +126,15 @@ To follow the logs as the container is created and set up use:
 So in the case of the included docker-compose file:
 `docker logs -f automate-cloud-vpn`
 
-The container should do all the setup and installation automatically. However, if you need to test out new scripts
-or configurations, move on to the following section.
+The container should do all the setup and installation automatically.
 
 #### Final notes
+When the automation process is complete you should see these two lines in the logs:
+```
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+Creating endless sleep loop to persist container. Press CTRL+C to exit
+```
+
 You should now have a new aws instance with wireguard installed and configured as the server as
 well as a client side installation of wireguard on a separate container as the client. To test
 if everything is working correctly, see below.
