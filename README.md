@@ -146,7 +146,7 @@ container. We do this by running `wg-quick` on the wg0.conf file in the shared c
 (this file was created by ansible on the app container):
 
 ```
-docker exec automate-cloud-vpn wg-quick up /wireguard/wg0.conf
+docker exec automate-cloud-vpn-testing wg-quick up /wireguard/wg0.conf
 ```
 
 Once the interface has been created, we can try pinging the wireguard server on the AWS instance 
@@ -154,7 +154,7 @@ on the wireguard subnet. The default value should be 10.11.12.1 unless it was ov
 `WIREGUARD_SERVER_IP` environment variable.
 
 ```bash
-ping 10.11.12.1
+docker exec automate-cloud-vpn-testing ping -c 3 10.11.12.1
 ```
 ---
 ### Interactive Terraform Apply
