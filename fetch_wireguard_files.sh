@@ -5,6 +5,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 container_path="/wireguard/client"
+path="/etc/wireguard"
 
 usage() {
  echo "usage: ./fetch_wireguard_files.sh [OPTIONS] [CONTAINER NAME]
@@ -14,8 +15,9 @@ CONTAINER_NAME          Specify container name instead of searching in docker-co
 
 OPTIONS
 -------
--p DESTINATION_PATH     Destination path to copy files to
--r REMOTE_HOST          Use rsync to copy files to remote host (ie: 192.168.0.101 or my-other-host.mydomain.com)
+-p LOCAL_DESTINATION_PATH     Local destination path to copy files to (/etc/wireguard)
+-r USER@HOST:REMOTE_PATH      Use rsync to copy files to remote host
+                              (ie: john@192.168.0.101:~/ or ron@host.mydomain.com:/tmp)
 "
 }
 
@@ -54,12 +56,12 @@ fetch_remote() {
   echo "docker exec ${1} cat ${2}/wg0.conf | sudo tee ${tmp_path}/wg0.conf"
   docker exec ${1} cat ${2}/wg0.conf | sudo tee "${tmp_path}/wg0.conf" > /dev/null
 
+  echo "rsync -v ${tmp_path}/privatekey ${tmp_path}/publickey ${tmp_path}/wg0.conf ${3}"
   rsync -v "${tmp_path}/privatekey" "${tmp_path}/publickey" "${tmp_path}/wg0.conf" "${3}"
 
+  echo "rm -rf ${tmp_path}"
   rm -rf "${tmp_path}"
 }
-
-path="/etc/wireguard"
 
 while getopts "p:r::" options; do
 case "${options}" in
@@ -85,7 +87,6 @@ done
 
 # Remove any trailing slashes
 path="${path%"${path##*[!/]}"}"
-
 
 # Ensure only one non-opt argument at the end
 shift $((OPTIND-1))
