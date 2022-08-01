@@ -10,7 +10,7 @@ to it.
 ---
 ## Table of Contents
 - [Pre-requisites](#pre-requisites)
-- [start](#start)
+- [Start](#start)
 - [Testing Wireguard Connection](#testing-wireguard-connection)
 ---
 
