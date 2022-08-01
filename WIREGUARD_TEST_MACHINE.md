@@ -26,6 +26,11 @@ to it.
 git clone https://github.com/albeanski/automate-cloud-vpn/ .
 ```
 
+Change directory into the cloned repository:
+```
+cd automate-cloud-vpn
+```
+
 #### 2. Create an `env_vars` file to store required variables the container needs.
 ```
 nano env_vars
