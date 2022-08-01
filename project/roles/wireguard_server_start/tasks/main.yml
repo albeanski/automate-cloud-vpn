@@ -1,0 +1,9 @@
+---
+# tasks file for wireguard_server_start
+- name: start wireguard and enable on boot
+  become: yes
+  ansible.builtin.systemd:
+    name: wg-quick@wg0
+    enabled: yes
+    state: started
+

@@ -1,0 +1,6 @@
+---
+- name: reload wireguard interface config
+  become: true
+  shell: wg syncconf wg0 <(wg-quick strip wg0)
+  args:
+    executable: /bin/bash

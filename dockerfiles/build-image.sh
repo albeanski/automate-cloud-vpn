@@ -29,7 +29,7 @@ fi
 if [ "${BUILD_IMAGE_PUSH}" = "true" ] || [ "${BUILD_IMAGE_PUSH}" = "True" ] ||
    [ "${BUILD_IMAGE_PUSH}" = "TRUE" ] || [ "${BUILD_IMAGE_PUSH}" = "yes" ] ||
    [ "${BUILD_IMAGE_PUSH}" = "Yes" ] || [ "${BUILD_IMAGE_PUSH}" = "YES" ] ||
-   [ "${BUILD_IMAGE_PUSH}" -eq 1 ]; then
+   [ "${BUILD_IMAGE_PUSH}" = "1" ]; then
 
   push=y
 

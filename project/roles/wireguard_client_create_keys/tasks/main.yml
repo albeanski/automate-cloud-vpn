@@ -3,6 +3,12 @@
 #          and: https://dev.to/tangramvision/exploring-ansible-via-setting-up-a-wireguard-vpn-3389
 #
 # tasks file for wireguard_client_create_keys
+- name: Ensure dest template directory exists
+  file:
+    path: "{{ wireguard_runtime_dir }}"
+    mode: "0750"
+    state: directory
+
 - name: Generate Wireguard keypair
   ansible.builtin.shell: > 
     wg genkey | 
@@ -21,6 +27,9 @@
   ansible.builtin.slurp:
     src: "{{ wireguard_client_publickey_file }}"
   register: publickey
+
+- debug:
+    var:  publickey['content'] | b64decode
 
 - name: Set wireguard client keys facts
   ansible.builtin.set_fact:

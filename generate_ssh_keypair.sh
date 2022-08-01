@@ -1,5 +1,10 @@
 #/bin/sh
-key_directory="${PWD}/files"
+if [ -d "./project" ]; then
+  key_directory="${PWD}/project/files"
+else
+  key_directory="${PWD}/files"
+fi
+
 private_key="${key_directory}/ssh_key"
 public_key="${private_key}.pub"
 

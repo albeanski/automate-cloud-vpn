@@ -3,5 +3,5 @@
 wireguard_template_dir: templates/wireguard
 wireguard_runtime_dir: /wireguard
 
-wireguard_client_privatekey_file: "{{ wireguard_runtime_dir }}/client_privatekey"
-wireguard_client_publickey_file: "{{ wireguard_runtime_dir }}/client_publickey"
+wireguard_client_privatekey_file: "{{ wireguard_runtime_dir }}/client/privatekey"
+wireguard_client_publickey_file: "{{ wireguard_runtime_dir }}/client/publickey"

@@ -1,33 +1,32 @@
-# automate-cloud-vpn
-Automate the deployment of a cloud instance using Terraform and Ansible and create a VPN server for remote access
-e automated build processing is enabled.
+# Wireguard Client Testing on Baremetal/Virtual Machine
 
-> See the [development documentation](DEV.md) for more information.
+This guide is for setting up the docker host to test the wireguard connection 
+to the AWS instance, if you want to use a docker container for testing instead,
+refer the [quickstart guide](quickstart).
+
+This should also work with separate machine as well if you copy the wireguard config
+to it.
 
 ---
 ## Table of Contents
 - [Pre-requisites](#pre-requisites)
-- [Quickstart](#quickstart)
+- [Start](#start)
 - [Testing Wireguard Connection](#testing-wireguard-connection)
-
 ---
+
 ## Pre-requisites
 - Must have a basic understanding of Ansible, Docker, and Terraform
-- Docker engine and docker-compose must be installed on the host machine.
+- Docker-engine and docker-compose must be installed on the host machine.
 - You must create or have access to an AWS account
 
 ---
-## Quickstart
-> This uses a separate container as a testing container to test the connection to the wireguard server
-on the AWS instance. If you want to use the docker host as the wireguard client for testing instead,
-follow the [Wireguard Client on Machine](WIREGUARD_TEST_MACHINE.md) guide.
-
+## Start
 #### 1. Clone the repository
 ```
 git clone https://github.com/albeanski/automate-cloud-vpn/ .
 ```
 
-And change directory into the cloned repository
+Change directory into the cloned repository:
 ```
 cd automate-cloud-vpn
 ```
@@ -49,19 +48,12 @@ AWS_USER=ubuntu                                           # The privileged usern
 Edit the env_vars file with your information and save.
 See [ENV.md](ENV.md) for a full list of environment variables the container accepts.
 
-Restrict permissions of `env_vars` to user only:
-```
-chmod 660 env_vars
-```
-
 #### 3. Volume Mounts
 Create an empty `terraform.tfstate` terraform state file. This will allow you to persist the terraform state after destruction.
 ```
 touch terraform.tfstate
 ```
-
-This terraform state file has a bind mount in the docker-compose file:
-
+Then add a bind mount to the docker-compose file:
 **./docker-compose.yml**
 ```yaml
   ...
@@ -70,17 +62,6 @@ This terraform state file has a bind mount in the docker-compose file:
   ...
 ```
 (Or if you have a terraform state already that you want to use bind that .tfstate file to `/terraform/terraform.state`)
-
-For testing the wireguard connection, we will also need to create the wireguard client directory which
-we will bind to our app and testing containers:
-
-```
-mkdir wireguard_client_config
-```
-
-> This directory is mounted on docker-compose-testing.yml which binds it to both the app and the testing
-container. When the wireguard client config is generated in the app, it will be available to the
-testing container and will be used for testing the connection.
 
 #### 4. Generate ssh keys
 Use the `generate_ssh_keys.sh` script to create ssh keys that terraform and ansible will use.
@@ -117,10 +98,10 @@ We will be using docker-compose to spin up our containers. There are 2 container
 app: the automation container
 testing: a container with wireguard to test the connection to the server
 
-We will use the testing compose file as an override as follows:
+We will use the testing compose file as an override:
 
 ```
-docker-compose -f docker-compose.yml -f docker-compose-testing.yml up -d
+docker-compose up -d
 ```
 
 To follow the logs as the container is created and set up use:
@@ -128,36 +109,44 @@ To follow the logs as the container is created and set up use:
 So in the case of the included docker-compose file:
 `docker logs -f automate-cloud-vpn`
 
-The container should do all the setup and installation automatically.
+The container should do all the setup and installation automatically. However, if you would like
+to test out the connection to the server, follow the next steps.
 
-#### Final notes
-When the automation process is complete you should see these two lines in the logs:
-```
-Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
-Creating endless sleep loop to persist container. Press CTRL+C to exit
-```
+#### 7. Install wireguard on the client machine
+In order to test the wireguard connection we need another machine as the client. For simplicity, we will use the docker host machine as the client. The following installs onto Ubuntu and will likely work on other Debian based operating systems (see the [wireguard installation](www.wireguard.com/install)  documentation for your specific OS).
 
-You should now have a new aws instance with wireguard installed and configured as the server as
-well as a client side installation of wireguard on a separate container as the client. To test
-if everything is working correctly, see below.
-
----
-### Testing Wireguard Connection
-To test the wireguard connection we must create and spin uo the wireguard interface on the testing
-container. We do this by running `wg-quick` on the wg0.conf file in the shared config directory. 
-(this file was created by ansible on the app container):
-
-```
-docker exec automate-cloud-vpn-testing wg-quick up /wireguard/wg0.conf
+Update the apt repository & Install the wireguard package
+```bash
+sudo apt update
+sudo apt install -y wireguard
 ```
 
-Once the interface has been created, we can try pinging the wireguard server on the AWS instance 
-on the wireguard subnet. The default value should be 10.11.12.1 unless it was overridden with the 
-`WIREGUARD_SERVER_IP` environment variable.
+#### 8. Setup and configure wireguard on the client
+
+Copy the client private and public wireguard keys as well as the wg0 interface config.
+> Use the `fetch_wireguard_files.sh` script to do this for you. `sudo ./fetch_wireguard_files.sh`
 
 ```bash
-docker exec automate-cloud-vpn-testing ping -c 3 10.11.12.1
+docker exec -it automate-cloud-vpn cat /wireguard/client/private_key > /etc/wireguard/privatekey
+docker exec -it automate-cloud-vpn cat /wireguard/client/private_key > /etc/wireguard/publickey
+docker exec -it automate-cloud-vpn cat /wireguard/client/wg0.conf > /etc/wireguard/wg0.conf
 ```
+
+Quick start wireguard using wg0
+```bash
+sudo wg-quick up wg0
+```
+
+#### Testing Connection
+You should now have a new AWA instance with wireguard installed and configured as
+well as a client side installation of wireguard on your local machine. Ping the 
+AWS instance on the wireguard subnet. The default value should be 10.11.12.1 unless
+it was overridden with the `WIREGUARD_SERVER_IP` environment variable.
+
+```bash
+ping 10.11.12.1
+```
+
 ---
 ### Interactive Terraform Apply
 If TERRAFORM_AUTO_APPROVE is unset or set to false, `terraform apply` must be run manually after 
