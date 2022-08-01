@@ -10,7 +10,7 @@ See the [development documentation](DEV.md) for more information.
 
 ## Pre-requisites
 - Must have a basic understanding of Ansible, Docker, and Terraform
-- Docker must be installed on the host machine.
+- Docker engine and docker-compose must be installed on the host machine.
 - You must create or have access to an AWS account
 - A wireguard client machine to test the connection. This can be another workstation/vm/machine or the docker host itself.
 
