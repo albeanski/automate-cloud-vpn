@@ -59,9 +59,10 @@ Create an empty `terraform.tfstate` terraform state file. This will allow you to
 ```
 touch terraform.tfstate
 ```
-Then add a bind mount to the docker-compose file:
+
+This terraform state file has a bind mount in the docker-compose file:
 **./docker-compose.yml**
-```yanl
+```yaml
   ...
   volumes:
     - ./terraform.tfstate:/terraform/terraform.tfstate
@@ -101,7 +102,7 @@ auto-approve to skip this prompt. See [Interactive Terraform Apply](#interactive
 if you want to review and apply the terraform configuration manually.
 
 Set the `TERRAFORM_AUTO_APPROVE` environment variable in the docker-compose file to 'true':
-```yanl
+```yaml
   ...
   environment:
     - TERRAFORM_AUTO_APPROVE=true
