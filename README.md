@@ -13,14 +13,14 @@ e automated build processing is enabled.
 ---
 ## Pre-requisites
 - Must have a basic understanding of Ansible, Docker, and Terraform
-- Docker must be installed on the host machine.
+- Docker engine and docker-compose must be installed on the host machine.
 - You must create or have access to an AWS account
 
 ---
 ## Quickstart
 > This uses a separate container as a testing container to test the connection to the wireguard server
 on the AWS instance. If you want to use the docker host as the wireguard client for testing instead,
-follow the [Wireguard Client on Machine](#WIREGUARD_CLIENT_MACHINE.md) guide.
+follow the [Wireguard Client on Machine](WIREGUARD_TEST_MACHINE.md) guide.
 
 #### 1. Clone the repository
 ```
@@ -126,10 +126,15 @@ To follow the logs as the container is created and set up use:
 So in the case of the included docker-compose file:
 `docker logs -f automate-cloud-vpn`
 
-The container should do all the setup and installation automatically. However, if you need to test out new scripts
-or configurations, move on to the following section.
+The container should do all the setup and installation automatically.
 
 #### Final notes
+When the automation process is complete you should see these two lines in the logs:
+```
+Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
+Creating endless sleep loop to persist container. Press CTRL+C to exit
+```
+
 You should now have a new aws instance with wireguard installed and configured as the server as
 well as a client side installation of wireguard on a separate container as the client. To test
 if everything is working correctly, see below.
@@ -141,7 +146,7 @@ container. We do this by running `wg-quick` on the wg0.conf file in the shared c
 (this file was created by ansible on the app container):
 
 ```
-docker exec automate-cloud-vpn wg-quick up /wireguard/wg0.conf
+docker exec automate-cloud-vpn-testing wg-quick up /wireguard/wg0.conf
 ```
 
 Once the interface has been created, we can try pinging the wireguard server on the AWS instance 
@@ -149,7 +154,7 @@ on the wireguard subnet. The default value should be 10.11.12.1 unless it was ov
 `WIREGUARD_SERVER_IP` environment variable.
 
 ```bash
-ping 10.11.12.1
+docker exec automate-cloud-vpn-testing ping -c 3 10.11.12.1
 ```
 ---
 ### Interactive Terraform Apply
