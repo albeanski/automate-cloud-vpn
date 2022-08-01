@@ -20,7 +20,7 @@ e automated build processing is enabled.
 ## Quickstart
 > This uses a separate container as a testing container to test the connection to the wireguard server
 on the AWS instance. If you want to use the docker host as the wireguard client for testing instead,
-follow the [Wireguard Client on Machine](WIREGUARD_CLIENT_MACHINE.md) guide.
+follow the [Wireguard Client on Machine](WIREGUARD_TEST_MACHINE.md) guide.
 
 #### 1. Clone the repository
 ```
