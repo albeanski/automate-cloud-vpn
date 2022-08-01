@@ -84,7 +84,7 @@ auto-approve to skip this prompt. See [Interactive Terraform Apply](#interactive
 if you want to review and apply the terraform configuration manually.
 
 Set the `TERRAFORM_AUTO_APPROVE` environment variable in the docker-compose file to 'true':
-```yanl
+```yaml
   ...
   environment:
     - TERRAFORM_AUTO_APPROVE=true
@@ -134,7 +134,7 @@ docker exec -it automate-cloud-vpn cat /wireguard/client/wg0.conf > /etc/wiregua
 
 Quick start wireguard using wg0
 ```bash
-wg-quick up wg0
+sudo wg-quick up wg0
 ```
 
 #### Testing Connection
