@@ -42,7 +42,8 @@ See [ENV.md](ENV.md) for a full list of environment variables the container acce
 ```
 touch terraform.tfstate
 ```
-Then add a bind mount to the docker-compose file:
+Then make sure a bind mount to the docker-compose file exists:
+
 **./docker-compose.yml**
 ```yanl
   ...
@@ -91,8 +92,7 @@ To follow the logs as the container is created and set up use:
 So in the case of the included docker-compose file:
 `docker logs -f automate-cloud-vpn`
 
-The container should do all the setup and installation automatically. However, if you need to test out new scripts
-or configurations, move on to the following section.
+The container should do all the setup and installation automatically. 
 
 #### 7. Install wireguard on the client machine
 In order to test the wireguard connection we need another machine as the client. For simplicity, we will use the docker host machine as the client. The following installs onto Ubuntu and will likely work on other Debian based operating systems (see the [wireguard installation](www.wireguard.com/install)  documentation for your specific OS).
