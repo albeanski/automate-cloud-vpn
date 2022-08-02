@@ -70,22 +70,22 @@ This terraform state file has a bind mount in the docker-compose file:
 ```
 (Or if you have a terraform state already that you want to use bind that .tfstate file to `/terraform/terraform.state`)
 
-For testing the wireguard connection, we will also need to create the wireguard client directory which
-we will bind to our app and testing containers:
+#### 4. SSH keys
+SSH keys will be created during the automation process. To provide your own create a `ssh_keys` directory on the repo root:
+```
+mkdir ./ssh_keys
+```
+
+The expected names in the `ssh_keys` directory are: `ssh_key` and `ssh_key.pub` where `ssh_key` is the private key and `ssh_key.pub` is
+the public key.
 
 ```
-mkdir wireguard_client_config
+ssh_keys/
+├── ssh_key
+└── ssh_key.pub
 ```
 
-> This directory is mounted on docker-compose-testing.yml which binds it to both the app and the testing
-container. When the wireguard client config is generated in the app, it will be available to the
-testing container and will be used for testing the connection.
-
-#### 4. Generate ssh keys
-Use the `generate_ssh_keys.sh` script to create ssh keys that terraform and ansible will use.
-```
-./generate_ssh_keys.sh
-```
+If you leave the `ssh_keys` directory empty, ssh_keys will be generated inside that directory.
 
 #### 5. Enable Terraform Auto Approve
 When using the Terraform apply command normally, the following interactive confirmation is 
