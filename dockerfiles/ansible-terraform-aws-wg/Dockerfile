@@ -4,14 +4,7 @@ USER root
 
 RUN apk add wireguard-tools && \
   mkdir -p /wireguard/client /ssh_keys && \
-  chown -R dev:dev /wireguard
-
-RUN wg genkey | \
-    tee /etc/wireguard/privatekey | \
-    wg pubkey | \
-    tee /etc/wireguard/publickey && \
-    cp /etc/wireguard/publickey /wireguard/publickey
-
+  chown -R dev:dev /wireguard /ssh_keys
 
 COPY ./entrypoint.sh /
 RUN chmod +x /entrypoint.sh && \
