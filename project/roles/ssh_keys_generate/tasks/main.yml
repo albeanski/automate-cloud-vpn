@@ -1,10 +1,5 @@
 ---
 # tasks file for ssh_keys_generate
-- name: Ensure ssh key path exists
-  ansible.builtin.file: 
-    path: "{{ ssh_private_key | dirname }}"
-    state: directory
-
 - name: Generate ssh key pairs
   ansible.builtin.openssh_keypair:
     path: "{{ ssh_private_key }}"
