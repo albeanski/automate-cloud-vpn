@@ -150,13 +150,26 @@ container. We do this by running `wg-quick` on the wg0.conf file in the shared c
 docker exec automate-cloud-vpn-testing wg-quick up /wireguard/wg0.conf
 ```
 
-Once the interface has been created, we can try pinging the wireguard server on the AWS instance 
+Once the interface has been created, it will automatically ping the wireguard server on the AWS instance 
 on the wireguard subnet. The default value should be 10.11.12.1 unless it was overridden with the 
-`WIREGUARD_SERVER_IP` environment variable.
-
-```bash
-docker exec automate-cloud-vpn-testing ping -c 3 10.11.12.1
+`WIREGUARD_SERVER_IP` environment variable. The output should be similar to the following if everything
+was successful:
 ```
+#] ip link add wg0 type wireguard
+[#] wg setconf wg0 /dev/fd/63
+[#] ip -4 address add 10.11.12.2/24 dev wg0
+[#] ip link set mtu 1420 up dev wg0
+[#] ping -c 3 10.11.12.1
+PING 10.11.12.1 (10.11.12.1): 56 data bytes
+64 bytes from 10.11.12.1: seq=0 ttl=64 time=77.870 ms
+64 bytes from 10.11.12.1: seq=1 ttl=64 time=32.076 ms
+64 bytes from 10.11.12.1: seq=2 ttl=64 time=26.453 ms
+
+--- 10.11.12.1 ping statistics ---
+3 packets transmitted, 3 packets received, 0% packet loss
+round-trip min/avg/max = 26.453/45.466/77.870 ms
+```
+
 ---
 ### Interactive Terraform Apply
 If TERRAFORM_AUTO_APPROVE is unset or set to false, `terraform apply` must be run manually after 
