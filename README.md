@@ -71,7 +71,7 @@ This terraform state file has a bind mount in the docker-compose file:
 (Or if you have a terraform state already that you want to use bind that .tfstate file to `/terraform/terraform.state`)
 
 #### 4. SSH keys
-SSH keys will be created during the automation process. To provide your own create a `ssh_keys` directory on the repo root:
+SSH keys will be created during the automation process. To provide your own, create an `ssh_keys` directory on the repo root:
 ```
 mkdir ./ssh_keys
 ```
