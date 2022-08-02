@@ -3,6 +3,10 @@ services:
   app:
     volumes:
       - wg-client-config:/wireguard/client
+    depends_on:
+      - testing     # needs testing container to create mount first so it can
+                    # set the owner back to dev:dev afterwords. Otherwise, it
+                    # will be root:root and wont be able to be written to by app
 
   testing:
     container_name: automate-cloud-vpn-testing
