@@ -155,7 +155,7 @@ on the wireguard subnet. The default value should be 10.11.12.1 unless it was ov
 `WIREGUARD_SERVER_IP` environment variable. The output should be similar to the following if everything
 was successful:
 ```
-#] ip link add wg0 type wireguard
+[#] ip link add wg0 type wireguard
 [#] wg setconf wg0 /dev/fd/63
 [#] ip -4 address add 10.11.12.2/24 dev wg0
 [#] ip link set mtu 1420 up dev wg0
