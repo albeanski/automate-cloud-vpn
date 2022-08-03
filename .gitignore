@@ -3,3 +3,4 @@ env_vars
 *.tfstate*
 *.save
 wireguard_client_config
+ssh_keys/

@@ -1,6 +1,6 @@
 ---
-ssh_public_key:    "{{ lookup('ansible.builtin.env', 'SSH_PUBLIC_KEY',    default='/project/files/ssh_key.pub') }}"
-ssh_private_key:   "{{ lookup('ansible.builtin.env', 'SSH_PRIVATE_KEY',   default='/project/files/ssh_key') }}"
+ssh_public_key:    "{{ lookup('ansible.builtin.env', 'SSH_PUBLIC_KEY',    default='/ssh_keys/ssh_key.pub') }}"
+ssh_private_key:   "{{ lookup('ansible.builtin.env', 'SSH_PRIVATE_KEY',   default='/ssh_keys/ssh_key') }}"
 
 aws_instance_name: "{{ lookup('ansible.builtin.env', 'AWS_INSTANCE_NAME') | mandatory }}"
 aws_instance_type: "{{ lookup('ansible.builtin.env', 'AWS_INSTANCE_TYPE', default='t2.micro') }}"

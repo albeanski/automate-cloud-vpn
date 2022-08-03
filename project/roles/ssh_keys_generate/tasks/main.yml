@@ -1,0 +1,6 @@
+---
+# tasks file for ssh_keys_generate
+- name: Generate ssh key pairs
+  ansible.builtin.openssh_keypair:
+    path: "{{ ssh_private_key }}"
+
