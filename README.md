@@ -143,7 +143,7 @@ if everything is working correctly, see below.
 
 ---
 ### Testing Wireguard Connection
-To test the wireguard connection we must create and spin uo the wireguard interface on the testing
+To test the wireguard connection we must create and spin up the wireguard interface on the testing
 container. We do this by running `wg-quick` on the wg0.conf file in the shared config directory. 
 (this file was created by ansible on the app container):
 
