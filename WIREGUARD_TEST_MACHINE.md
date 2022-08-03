@@ -63,11 +63,22 @@ Then add a bind mount to the docker-compose file:
 ```
 (Or if you have a terraform state already that you want to use bind that .tfstate file to `/terraform/terraform.state`)
 
-#### 4. Generate ssh keys
-Use the `generate_ssh_keys.sh` script to create ssh keys that terraform and ansible will use.
+#### 4. SSH keys
+SSH keys will be created during the automation process. To provide your own, create an `ssh_keys` directory on the repo root:
 ```
-./generate_ssh_keys.sh
+mkdir ./ssh_keys
 ```
+
+The expected names in the `ssh_keys` directory are: `ssh_key` and `ssh_key.pub` where `ssh_key` is the private key and `ssh_key.pub` is
+the public key.
+
+```
+ssh_keys/
+├── ssh_key
+└── ssh_key.pub
+```
+
+If you leave the `ssh_keys` directory empty, ssh_keys will be generated inside that directory.
 
 #### 5. Enable Terraform Auto Approve
 When using the Terraform apply command normally, the following interactive confirmation is 
@@ -132,19 +143,32 @@ docker exec -it automate-cloud-vpn cat /wireguard/client/private_key > /etc/wire
 docker exec -it automate-cloud-vpn cat /wireguard/client/wg0.conf > /etc/wireguard/wg0.conf
 ```
 
-Quick start wireguard using wg0
+#### 9. Testing Wireguard Connection
+To test the wireguard connection we must create and spin up the wireguard interface on the host. 
+We do this by running `wg-quick` on the wg0 interface:
+
 ```bash
 sudo wg-quick up wg0
 ```
 
-#### Testing Connection
-You should now have a new AWA instance with wireguard installed and configured as
-well as a client side installation of wireguard on your local machine. Ping the 
-AWS instance on the wireguard subnet. The default value should be 10.11.12.1 unless
-it was overridden with the `WIREGUARD_SERVER_IP` environment variable.
+Once the interface has been created, it will automatically ping the wireguard server on the AWS instance 
+on the wireguard subnet. The default value should be 10.11.12.1 unless it was overridden with the 
+`WIREGUARD_SERVER_IP` environment variable. The output should be similar to the following if everything
+was successful:
+```
+[#] ip link add wg0 type wireguard
+[#] wg setconf wg0 /dev/fd/63
+[#] ip -4 address add 10.11.12.2/24 dev wg0
+[#] ip link set mtu 1420 up dev wg0
+[#] ping -c 3 10.11.12.1
+PING 10.11.12.1 (10.11.12.1): 56 data bytes
+64 bytes from 10.11.12.1: seq=0 ttl=64 time=77.870 ms
+64 bytes from 10.11.12.1: seq=1 ttl=64 time=32.076 ms
+64 bytes from 10.11.12.1: seq=2 ttl=64 time=26.453 ms
 
-```bash
-ping 10.11.12.1
+--- 10.11.12.1 ping statistics ---
+3 packets transmitted, 3 packets received, 0% packet loss
+round-trip min/avg/max = 26.453/45.466/77.870 ms
 ```
 
 ---
